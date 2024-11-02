@@ -11,6 +11,8 @@ public class User {
     @Id
     @GeneratedValue(generator = "GenerationType.UUID")
     private UUID id;
+    @Column(unique = true, nullable = false)
+    private String username;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
@@ -25,7 +27,8 @@ public class User {
     private String profileImage;
 
 
-    public User(String name, String surname, String email, Integer emailVerificationCode, String profileImage) {
+    public User(String username, String name, String surname, String email, Integer emailVerificationCode, String profileImage) {
+        this.username = username;
         this.name = name;
         this.surname = surname;
         this.email = email;
