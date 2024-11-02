@@ -1,9 +1,6 @@
 package com.match_intel.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -14,11 +11,17 @@ public class User {
     @Id
     @GeneratedValue(generator = "GenerationType.UUID")
     private UUID id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String surname;
+    @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
     private boolean isEmailConfirmed;
+    @Column
     private Integer emailVerificationCode;
+    @Column
     private String profileImage;
 
 
