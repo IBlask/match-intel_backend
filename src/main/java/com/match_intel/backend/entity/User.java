@@ -14,11 +14,13 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
     @Column(nullable = false)
-    private String name;
+    private String firstName;
     @Column(nullable = false)
-    private String surname;
+    private String lastName;
     @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
+    private String password;
     @Column(nullable = false)
     private boolean isEmailConfirmed;
     @Column
@@ -27,14 +29,15 @@ public class User {
     private String profileImage;
 
 
-    public User(String username, String name, String surname, String email, Integer emailVerificationCode, String profileImage) {
-        this.username = username;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.isEmailConfirmed = false;
-        this.emailVerificationCode = emailVerificationCode;
-        this.profileImage = profileImage;
-    }
+    public User() {}
 
+    public User(String username, String firstName, String lastName, String email, String password) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.isEmailConfirmed = false;
+        this.emailVerificationCode = 0;
+    }
 }
