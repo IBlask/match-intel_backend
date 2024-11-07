@@ -22,9 +22,7 @@ public class User {
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
-    private boolean isEmailConfirmed;
-    @Column
-    private Integer emailVerificationCode;
+    private boolean enabled;
     @Column
     private String profileImage;
 
@@ -37,7 +35,35 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.isEmailConfirmed = false;
-        this.emailVerificationCode = 0;
+        this.enabled = false;
+    }
+
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
     }
 }

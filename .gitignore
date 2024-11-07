@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### private/env properties ###
+src/main/resources/private.properties
+
 ### STS ###
 .apt_generated
 .classpath
