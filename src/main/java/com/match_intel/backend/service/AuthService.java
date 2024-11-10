@@ -5,13 +5,13 @@ import com.match_intel.backend.auth.token.EmailConfirmationTokenService;
 import com.match_intel.backend.auth.utils.EmailValidator;
 import com.match_intel.backend.dto.request.RegisterUserRequest;
 import com.match_intel.backend.entity.User;
+import com.match_intel.backend.exception.ClientErrorException;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -26,29 +26,23 @@ public class AuthService {
     private UserService userService;
 
 
-    public Optional<String> register(RegisterUserRequest request) {
+    public void register(RegisterUserRequest request) {
         boolean isValidEmail = emailValidator.validate(request.getEmail());
         if (!isValidEmail) {
-            return Optional.of("Entered email is not valid!");
+            throw new ClientErrorException(HttpStatus.valueOf(400), "Entered email is not valid!");
         }
 
-        Pair<Optional<User>, Optional<String>> newUserAndExPair = userService.registerUser(request);
-        if (newUserAndExPair.getFirst().isEmpty()) {
-            return newUserAndExPair.getSecond();
-        }
+        User newUser = userService.registerUser(request);
 
-        EmailConfirmationToken token = tokenService.createToken(newUserAndExPair.getFirst().get().getId());
+        EmailConfirmationToken token = tokenService.createToken(newUser.getId());
         tokenService.saveToken(token);
-
 
         new Thread(() -> {
             try {
-                emailService.sendEmailConfirmation(newUserAndExPair.getFirst().get(), token.getToken());
+                emailService.sendEmailConfirmation(newUser, token.getToken());
             } catch (MessagingException | UnsupportedEncodingException e) {
                 System.out.println(e.getMessage());
             }
         }).start();
-
-        return Optional.empty();
     }
 }
