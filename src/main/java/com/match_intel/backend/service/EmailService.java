@@ -7,6 +7,7 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -40,6 +41,7 @@ public class EmailService {
     }
 
 
+    @Async
     public void sendEmail(String email, String subject, String content) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -57,6 +59,7 @@ public class EmailService {
 
 
 
+    @Async
     public void sendEmailConfirmation(User user, String token) throws MessagingException, UnsupportedEncodingException {
         Context context = new Context();
         context.setVariable("firstName", user.getFirstName());

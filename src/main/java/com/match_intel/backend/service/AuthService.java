@@ -37,12 +37,11 @@ public class AuthService {
         EmailConfirmationToken token = tokenService.createToken(newUser.getId());
         tokenService.saveToken(token);
 
-        new Thread(() -> {
-            try {
-                emailService.sendEmailConfirmation(newUser, token.getToken());
-            } catch (MessagingException | UnsupportedEncodingException e) {
-                System.out.println(e.getMessage());
-            }
-        }).start();
+
+        try {
+            emailService.sendEmailConfirmation(newUser, token.getToken());
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
