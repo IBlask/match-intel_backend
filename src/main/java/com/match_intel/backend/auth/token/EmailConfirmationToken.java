@@ -1,6 +1,5 @@
 package com.match_intel.backend.auth.token;
 
-import com.match_intel.backend.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,5 +37,9 @@ public class EmailConfirmationToken {
 
     public String getToken() {
         return token;
+    }
+
+    public String getIdAsString() {
+        return id.toString();
     }
 }

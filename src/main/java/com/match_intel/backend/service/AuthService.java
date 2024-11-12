@@ -6,12 +6,9 @@ import com.match_intel.backend.auth.utils.EmailValidator;
 import com.match_intel.backend.dto.request.RegisterUserRequest;
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.exception.ClientErrorException;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.io.UnsupportedEncodingException;
 
 @Service
 public class AuthService {
@@ -37,11 +34,6 @@ public class AuthService {
         EmailConfirmationToken token = tokenService.createToken(newUser.getId());
         tokenService.saveToken(token);
 
-
-        try {
-            emailService.sendEmailConfirmation(newUser, token.getToken());
-        } catch (MessagingException | UnsupportedEncodingException e) {
-            System.out.println(e.getMessage());
-        }
+        emailService.sendEmailConfirmation(newUser, token);
     }
 }

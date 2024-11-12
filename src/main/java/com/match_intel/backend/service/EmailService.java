@@ -1,9 +1,11 @@
 package com.match_intel.backend.service;
 
+import com.match_intel.backend.auth.token.EmailConfirmationToken;
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.properties.EmailProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 @Service
+@Slf4j
 public class EmailService {
 
     private final JavaMailSenderImpl mailSender;
@@ -42,13 +45,18 @@ public class EmailService {
 
 
     @Async
-    public void sendEmail(String email, String subject, String content) throws MessagingException, UnsupportedEncodingException {
+    public void sendEmail(String emailRecipient, String subject, String content) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        helper.setFrom(emailProperties.getUsername(), "Match Intel");
-        helper.setTo(email);
+        try {
+            helper.setFrom(emailProperties.getUsername(), "Match Intel");
+        } catch (UnsupportedEncodingException e) {
+            log.warn("Encoding issue when setting email sender, defaulting to username", e);
+            helper.setFrom(emailProperties.getUsername());
+        }
 
+        helper.setTo(emailRecipient);
         helper.setSubject(subject);
         helper.setText(content, true);
 
@@ -60,13 +68,25 @@ public class EmailService {
 
 
     @Async
-    public void sendEmailConfirmation(User user, String token) throws MessagingException, UnsupportedEncodingException {
+    public void sendEmailConfirmation(User user, EmailConfirmationToken token) {
         Context context = new Context();
         context.setVariable("firstName", user.getFirstName());
-        context.setVariable("confirmationToken", token);
+        context.setVariable("confirmationToken", token.getToken());
 
         String content = templateEngine.process("/emails/emailConfirmationTemplate", context);
 
-        sendEmail(user.getEmail(), "Email confirmation", content);
+        try {
+            sendEmail(user.getEmail(), "Email confirmation", content);
+        } catch (Exception exception) {
+            log.error(
+                    String.format(
+                            "Error while sending email confirmation to user %s with token %s: %s",
+                            user.getId() != null ? user.getId() : "UNKNOWN",
+                            token.getIdAsString() != null ? token.getIdAsString() : "UNKNOWN",
+                            exception.getMessage()
+                    ),
+                    exception
+            );
+        }
     }
 }
