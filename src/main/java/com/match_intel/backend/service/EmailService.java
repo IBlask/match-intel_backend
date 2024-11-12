@@ -67,16 +67,20 @@ public class EmailService {
 
 
 
-    @Async
-    public void sendEmailConfirmation(User user, EmailConfirmationToken token) {
+    public void sendEmailConfirmationSafely(User user, EmailConfirmationToken token) throws MessagingException {
         Context context = new Context();
         context.setVariable("firstName", user.getFirstName());
         context.setVariable("confirmationToken", token.getToken());
 
         String content = templateEngine.process("/emails/emailConfirmationTemplate", context);
 
+        sendEmail(user.getEmail(), "Email confirmation", content);
+    }
+
+    @Async
+    public void sendEmailConfirmationAsync(User user, EmailConfirmationToken token) {
         try {
-            sendEmail(user.getEmail(), "Email confirmation", content);
+            sendEmailConfirmationSafely(user, token);
         } catch (Exception exception) {
             log.error(
                     String.format(
