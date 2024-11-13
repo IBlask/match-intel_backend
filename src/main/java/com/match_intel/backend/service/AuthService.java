@@ -2,6 +2,8 @@ package com.match_intel.backend.service;
 
 import com.match_intel.backend.auth.token.EmailConfirmationToken;
 import com.match_intel.backend.auth.token.EmailConfirmationTokenService;
+import com.match_intel.backend.auth.token.RegistrationSessionToken;
+import com.match_intel.backend.auth.token.RegistrationSessionTokenService;
 import com.match_intel.backend.auth.utils.EmailValidator;
 import com.match_intel.backend.dto.request.RegisterUserRequest;
 import com.match_intel.backend.entity.User;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -23,12 +26,14 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
     @Autowired
-    private EmailConfirmationTokenService tokenService;
+    private EmailConfirmationTokenService emailTokenService;
+    @Autowired
+    private RegistrationSessionTokenService sessionTokenService;
     @Autowired
     private UserService userService;
 
 
-    public void register(RegisterUserRequest request) {
+    public String register(RegisterUserRequest request) {
         boolean isValidEmail = emailValidator.validate(request.getEmail());
         if (!isValidEmail) {
             throw new ClientErrorException(HttpStatus.valueOf(400), "Entered email is not valid!");
@@ -36,10 +41,14 @@ public class AuthService {
 
         User newUser = userService.registerUser(request);
 
-        EmailConfirmationToken token = tokenService.createToken(newUser.getId());
-        tokenService.saveToken(token);
+        EmailConfirmationToken emailToken = emailTokenService.createToken(newUser.getId());
+        emailTokenService.saveToken(emailToken);
 
-        emailService.sendEmailConfirmationAsync(newUser, token);
+        emailService.sendEmailConfirmationAsync(newUser, emailToken);
+
+        RegistrationSessionToken sessionToken = sessionTokenService.createToken(newUser.getId());
+        sessionTokenService.saveToken(sessionToken);
+        return sessionToken.getToken();
     }
 
 
@@ -59,8 +68,8 @@ public class AuthService {
             throw new ClientErrorException(HttpStatus.valueOf(400), "Email is already verified! You can log in.");
         }
 
-        EmailConfirmationToken newToken = tokenService.createToken(userOptional.get().getId());
-        tokenService.saveToken(newToken);
+        EmailConfirmationToken newToken = emailTokenService.createToken(userOptional.get().getId());
+        emailTokenService.saveToken(newToken);
 
         try {
             emailService.sendEmailConfirmationSafely(userOptional.get(), newToken);
@@ -79,5 +88,50 @@ public class AuthService {
                     "Couldn't send a confirmation email due to an internal error. Please try again later or contact our support team."
             );
         }
+    }
+
+
+    public void changeEmailBySessionToken(String sessionToken, String newEmail) {
+        boolean isEmailValid = emailValidator.validate(newEmail);
+        if (!isEmailValid) {
+            throw new ClientErrorException(
+                    HttpStatus.valueOf(400),
+                    "Entered email address is not valid!"
+            );
+        }
+
+        Optional<RegistrationSessionToken> tokenOptional = sessionTokenService.getToken(sessionToken);
+        if (tokenOptional.isEmpty()) {
+            throw new ClientErrorException(
+                    HttpStatus.valueOf(400),
+                    "Session token is not valid! Please try again or contact our support team."
+            );
+        }
+
+        RegistrationSessionToken token = tokenOptional.get();
+        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new ClientErrorException(
+                    HttpStatus.valueOf(400),
+                    "The time to change your email address has already expired and you can no longer change it."
+                    + " Please register again with a new username and correct email address."
+            );
+        }
+
+        Optional<User> userOptional = userService.getUserById(token.getUserId());
+        if (userOptional.isEmpty()) {
+            throw new ServerErrorException(
+                    HttpStatus.valueOf(500),
+                    "Couldn't change your email address due to an internal error. Please register again or contact our support team."
+            );
+        }
+
+        User user = userOptional.get();
+        user.setEmail(newEmail);
+        userService.saveUser(user);
+
+        EmailConfirmationToken emailToken = emailTokenService.createToken(user.getId());
+        emailTokenService.saveToken(emailToken);
+
+        emailService.sendEmailConfirmationAsync(user, emailToken);
     }
 }

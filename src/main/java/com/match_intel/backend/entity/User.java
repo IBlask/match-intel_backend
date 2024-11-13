@@ -66,4 +66,9 @@ public class User {
     public String getProfileImage() {
         return profileImage;
     }
+
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
