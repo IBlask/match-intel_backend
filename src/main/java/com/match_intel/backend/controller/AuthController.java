@@ -40,4 +40,10 @@ public class AuthController {
         authService.changeEmailBySessionToken(sessionToken, newEmail);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @GetMapping(value = "/confirm_email", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<?> confirmEmail(@RequestParam String token) {
+        authService.confirmEmail(token);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

@@ -134,4 +134,55 @@ public class AuthService {
 
         emailService.sendEmailConfirmationAsync(user, emailToken);
     }
+
+
+    public void confirmEmail(String confirmationToken) {
+        Optional<EmailConfirmationToken> tokenOptional = emailTokenService.getToken(confirmationToken);
+        if (tokenOptional.isEmpty()) {
+            throw new ClientErrorException(
+                    HttpStatus.valueOf(400),
+                    "Confirmation token is not valid. Please try again or request new confirmation token."
+            );
+        }
+
+        EmailConfirmationToken token = tokenOptional.get();
+        Optional<User> userOptional = userService.getUserById(token.getUserId());
+        if (userOptional.isEmpty()) {
+            throw new ServerErrorException(
+                    HttpStatus.valueOf(500),
+                    "Couldn't confirm your email due to an internal error. Please log in to your account and request a new confirmation token."
+            );
+        }
+
+        User user = userOptional.get();
+        if (user.isEnabled()) {
+            throw new ClientErrorException(
+                    HttpStatus.valueOf(400),
+                    "Email address has already been confirmed. You can log in to your account."
+            );
+        }
+
+        Optional<EmailConfirmationToken> lastTokenOptional = emailTokenService.getLastTokenByUserId(user.getId());
+        if (lastTokenOptional.isEmpty()) {
+            throw new ServerErrorException(
+                    HttpStatus.valueOf(500),
+                    "Couldn't confirm your email due to an internal error. Please log in to your account and request a new confirmation token."
+            );
+        }
+        if (!confirmationToken.equals(lastTokenOptional.get().getToken())) {
+            throw new ClientErrorException(
+                    HttpStatus.valueOf(400),
+                    "Please use the last issued token or request a new confirmation token by logging into your account."
+            );
+        }
+        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new ClientErrorException(
+                    HttpStatus.valueOf(400),
+                    "Token is expired. Please request a new confirmation token by logging into your account."
+            );
+        }
+
+        emailTokenService.setConfirmedAt(token);
+        userService.enableUser(user);
+    }
 }

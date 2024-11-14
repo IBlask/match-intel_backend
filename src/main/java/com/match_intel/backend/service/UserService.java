@@ -34,6 +34,11 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void enableUser(User user) {
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
+
 
     public User registerUser(RegisterUserRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {

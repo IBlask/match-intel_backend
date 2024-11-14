@@ -31,7 +31,12 @@ public class EmailConfirmationTokenService {
         return tokenRepository.findByToken(token);
     }
 
-    public int setConfirmedAt(String token) {
-        return tokenRepository.updateConfirmedAt(token, LocalDateTime.now());
+    public void setConfirmedAt(EmailConfirmationToken token) {
+        token.setConfirmedAt();
+        tokenRepository.save(token);
+    }
+
+    public Optional<EmailConfirmationToken> getLastTokenByUserId(UUID userId) {
+        return tokenRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
     }
 }
