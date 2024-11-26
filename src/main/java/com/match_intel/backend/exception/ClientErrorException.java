@@ -12,7 +12,7 @@ public class ClientErrorException extends RuntimeException {
     @JsonSerialize(as = LocalDateTime.class)
     private final LocalDateTime timestamp;
     @JsonSerialize(as = Integer.class)
-    private final int status;
+    private final int statusCode;
     @JsonSerialize(as = String.class)
     private final String error;
     @JsonSerialize(as = String.class)
@@ -22,13 +22,13 @@ public class ClientErrorException extends RuntimeException {
     public ClientErrorException(HttpStatus httpStatus, String errorMessage) {
         super(errorMessage);
         this.timestamp = LocalDateTime.now();
-        this.status = httpStatus.value();
+        this.statusCode = httpStatus.value();
         this.error = httpStatus.getReasonPhrase();
         this.message = errorMessage;
     }
 
 
-    public int getStatus() {
-        return status;
+    public int getStatusCode() {
+        return statusCode;
     }
 }
