@@ -18,7 +18,7 @@ public class OpenAPIConfiguration {
     @Bean
     public OpenAPI defineOpenApi() {
         Server server = new Server();
-        server.setUrl("http://localhost:8080");
+        server.setUrl("http://localhost:8080/api");
         server.setDescription("Development");
 
         Info information = new Info()
@@ -26,17 +26,28 @@ public class OpenAPIConfiguration {
                 .version("1.0")
                 .description("This API exposes endpoints to Match Intel system backend.");
 
+
         Components components = new Components()
                 .addSchemas(
                         "MessageResponse",
                         new Schema<Map<String, String>>()
-                                .addProperty("message", new StringSchema())
+                                .addProperty("message", new StringSchema()
+                                        .description("Appropriate response message"))
                 )
                 .addSchemas(
                         "RegisterResponse",
                         new Schema<Map<String, String>>()
                                 .addProperty("sessionToken", new StringSchema()
+                                        .description("Registration session token")
                                         .example("af4c19dd-e13f-4d72-84a5-a4328eb7c44c"))
+                )
+
+                .addSchemas(
+                        "EmailRequest",
+                        new Schema<Map<String, String>>()
+                                .addProperty("email", new StringSchema()
+                                        .description("User's email address")
+                                        .example("example@example.com"))
                 );
 
         return new OpenAPI()
