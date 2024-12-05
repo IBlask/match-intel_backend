@@ -40,4 +40,9 @@ public class ClientErrorException extends RuntimeException {
     public int getStatusCode() {
         return statusCode;
     }
+
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
 }

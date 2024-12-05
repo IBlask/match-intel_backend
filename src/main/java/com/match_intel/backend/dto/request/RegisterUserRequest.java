@@ -1,7 +1,9 @@
 package com.match_intel.backend.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class RegisterUserRequest {
 
     @Schema(description = "User's username", example = "jDoe1")
