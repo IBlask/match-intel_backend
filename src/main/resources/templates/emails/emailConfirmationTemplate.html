@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-    <body>
-        <p>Hi, [[${firstName}]]!</p>
-        <p>Thank you for registering. Please confirm your email on the following link:</p>
-        <a th:href="@{http://localhost:8080/api/auth/confirm_email(token=${confirmationToken})}">Confirm your email here</a>
-        <br />
-        <p>Your Match Intel</p>
-    </body>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+<div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px;">
+    <h2 style="color: #333; text-align: center;">Welcome, [[${firstName}]]!</h2>
+    <p style="color: #555; line-height: 1.6;">Thank you for registering with us. To complete your registration, please confirm your email address by clicking the button below.</p>
+    <div style="text-align: center; margin-top: 20px;">
+        <a th:href="@{http://localhost:8080/api/auth/confirm_email(token=${confirmationToken})}"
+           style="display: inline-block; background-color: #007bff; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;">
+            Confirm Email
+        </a>
+    </div>
+    <p style="color: #555; margin-top: 30px;">If you have any questions or need assistance, feel free to contact us.</p>
+    <hr style="border: none; border-top: 1px solid #ddd; margin-top: 20px;" />
+    <p style="color: #888; font-size: 12px; text-align: center;">Your Match Intel Team</p>
+</div>
+</body>
 </html>
