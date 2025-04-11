@@ -23,6 +23,7 @@ public class SecurityConfiguration {
                         .requestMatchers(toH2Console()).permitAll()
                         .requestMatchers("/swagger.html", "/swagger-ui/**", "/api-docs*/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/password_reset/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .csrf(AbstractHttpConfigurer::disable)

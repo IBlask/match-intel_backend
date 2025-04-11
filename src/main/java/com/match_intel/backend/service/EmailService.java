@@ -83,12 +83,32 @@ public class EmailService {
             sendEmailConfirmationSafely(user, token);
         } catch (Exception exception) {
             log.error(
-                    String.format(
-                            "Error while sending email confirmation to user %s with token %s: %s",
-                            user.getId() != null ? user.getId() : "UNKNOWN",
-                            token.getIdAsString() != null ? token.getIdAsString() : "UNKNOWN",
-                            exception.getMessage()
-                    ),
+                    "Error while sending email confirmation to user {} with token {}: {}",
+                        user.getId() != null ? user.getId() : "UNKNOWN",
+                        token.getIdAsString() != null ? token.getIdAsString() : "UNKNOWN",
+                        exception.getMessage(),
+                    exception
+            );
+        }
+    }
+
+
+    @Async
+    public void sendPasswordResetTokenAsync(User user, String token) {
+        try {
+            Context context = new Context();
+            context.setVariable("firstName", user.getFirstName());
+            context.setVariable("passwordResetToken", token);
+
+            String content = templateEngine.process("/emails/passwordResetTemplate", context);
+
+            sendEmail(user.getEmail(), "Reset your Match Intel password", content);
+        } catch (Exception exception) {
+            log.error(
+                    "Error while sending password reset email to user {} with token {}: {}",
+                        user.getId() != null ? user.getId() : "UNKNOWN",
+                        token != null ? token : "UNKNOWN",
+                        exception.getMessage(),
                     exception
             );
         }
