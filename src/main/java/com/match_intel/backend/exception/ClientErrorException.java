@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class ClientErrorException extends RuntimeException {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime timestamp;
 
+    @Getter
     @Schema(description = "HTTP status code", example = "400")
     @JsonSerialize(as = Integer.class)
     private final int statusCode;
@@ -23,7 +25,7 @@ public class ClientErrorException extends RuntimeException {
     @JsonSerialize(as = String.class)
     private final String error;
 
-    @Schema(description = "Server's error message", example = "Entered username doesn't exist!")
+    @Schema(description = "Server's error message", example = "No data provided!")
     @JsonSerialize(as = String.class)
     private final String message;
 
@@ -36,10 +38,6 @@ public class ClientErrorException extends RuntimeException {
         this.message = errorMessage;
     }
 
-
-    public int getStatusCode() {
-        return statusCode;
-    }
 
     @Override
     public String getMessage() {

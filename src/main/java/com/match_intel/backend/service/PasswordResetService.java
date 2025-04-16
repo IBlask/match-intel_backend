@@ -20,7 +20,7 @@ public class PasswordResetService {
     EmailService emailService;
 
 
-    public void request_token(String email) {
+    public void requestToken(String email) {
         Optional<User> userOptional = userService.getUserByEmail(email);
         if (userOptional.isEmpty()) {
             throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Can't find user with the entered email!");
