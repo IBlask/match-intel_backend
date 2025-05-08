@@ -3,6 +3,7 @@ package com.match_intel.backend.service;
 import com.match_intel.backend.dto.request.RegisterUserRequest;
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.exception.ClientErrorException;
+import com.match_intel.backend.exception.GeneralUnhandledException;
 import com.match_intel.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,5 +59,21 @@ public class UserService {
         userRepository.save(newUser);
 
         return newUser;
+    }
+
+
+    public void changePassword(UUID userId, String newPassword) throws GeneralUnhandledException {
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new GeneralUnhandledException("Please provide a password!");
+        }
+
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            throw new GeneralUnhandledException("User not found!");
+        }
+
+        User user = userOpt.get();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 }

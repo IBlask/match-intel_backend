@@ -20,6 +20,7 @@ public class PasswordResetToken {
     @Id
     @GeneratedValue(generator = "GenerationType.UUID")
     private UUID id;
+    @Getter
     @Column(nullable = false)
     private UUID userId;
     @Getter
@@ -41,5 +42,10 @@ public class PasswordResetToken {
         this.createdAt = LocalDateTime.now();
         this.expiresAt = LocalDateTime.now().plusMinutes(EXPIRATION_PERIOD);
         this.isUsed = false;
+    }
+
+
+    public void markAsUsed() {
+        this.isUsed = true;
     }
 }

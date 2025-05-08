@@ -2,12 +2,14 @@ package com.match_intel.backend.auth.token;
 
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.exception.ClientErrorException;
+import com.match_intel.backend.exception.GeneralUnhandledException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PasswordResetTokenService {
@@ -38,5 +40,32 @@ public class PasswordResetTokenService {
         }
 
         return Optional.empty();
+    }
+
+
+    public UUID getUserIdByToken(String requestToken) throws RuntimeException {
+        Optional<PasswordResetToken> tokenOpt = passwordResetTokenRepository.findByToken(requestToken);
+
+        if (tokenOpt.isEmpty()) {
+            throw new GeneralUnhandledException("Token doesn't exist in the database!");
+        }
+
+        return tokenOpt.get().getUserId();
+    }
+
+
+    public PasswordResetToken getPasswordResetTokenByTokenAsString(String token) {
+        Optional<PasswordResetToken> passwordResetTokenOpt = passwordResetTokenRepository.findByToken(token);
+        if (passwordResetTokenOpt.isEmpty()) {
+            throw new GeneralUnhandledException("Token doesn't exist in the database!");
+        }
+
+        return passwordResetTokenOpt.get();
+    }
+
+
+    public void markTokenAsUsed(PasswordResetToken token) {
+        token.markAsUsed();
+        passwordResetTokenRepository.save(token);
     }
 }

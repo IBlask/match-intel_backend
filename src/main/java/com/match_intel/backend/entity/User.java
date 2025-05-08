@@ -1,9 +1,13 @@
 package com.match_intel.backend.entity;
 
+import com.match_intel.backend.exception.GeneralUnhandledException;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(name = "Users")
 public class User {
@@ -17,10 +21,12 @@ public class User {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
+    @Setter
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
     private String password;
+    @Setter
     @Column(nullable = false)
     private boolean enabled;
     @Column
@@ -39,44 +45,10 @@ public class User {
     }
 
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setPassword(String password) throws GeneralUnhandledException {
+        if (password == null || password.isBlank()) {
+            throw new GeneralUnhandledException("Please provide a password!");
+        }
+        this.password = password;
     }
 }

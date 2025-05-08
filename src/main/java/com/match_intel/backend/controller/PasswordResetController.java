@@ -1,6 +1,7 @@
 package com.match_intel.backend.controller;
 
 import com.match_intel.backend.auth.token.PasswordResetTokenService;
+import com.match_intel.backend.dto.request.PasswordResetRequest;
 import com.match_intel.backend.dto.response.TokenValidationResponse;
 import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.service.PasswordResetService;
@@ -54,5 +55,25 @@ public class PasswordResetController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(returnDto);
+    }
+
+
+    @PostMapping("/change_password")
+    @ApiResponse(responseCode = "200",
+            description = "Password changed successfully")
+    public ResponseEntity<Void> changePassword (@RequestBody PasswordResetRequest requestDto) {
+        if (requestDto == null) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "No request body provided");
+        }
+        if (requestDto.getToken() == null || requestDto.getToken().isBlank()) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Please provide a password reset token!");
+        }
+        if (requestDto.getNewPassword() == null || requestDto.getNewPassword().isBlank()) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Please provide a new password!");
+        }
+
+        passwordResetService.changePassword(requestDto.getToken(), requestDto.getNewPassword());
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
