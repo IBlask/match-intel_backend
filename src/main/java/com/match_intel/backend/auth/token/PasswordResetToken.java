@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PasswordResetToken {
 
-    private static final int EXPIRATION_PERIOD = 60;    // 60 min
+    private static final int EXPIRATION_PERIOD = 15;    // 15 min
 
     @Id
     @GeneratedValue(generator = "GenerationType.UUID")
