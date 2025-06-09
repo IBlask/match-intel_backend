@@ -5,13 +5,17 @@ import com.match_intel.backend.auth.token.EmailConfirmationTokenService;
 import com.match_intel.backend.auth.token.RegistrationSessionToken;
 import com.match_intel.backend.auth.token.RegistrationSessionTokenService;
 import com.match_intel.backend.auth.utils.EmailValidator;
+import com.match_intel.backend.dto.request.LoginUserRequest;
 import com.match_intel.backend.dto.request.RegisterUserRequest;
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.exception.ServerErrorException;
+import com.match_intel.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,6 +35,10 @@ public class AuthService {
     private RegistrationSessionTokenService sessionTokenService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
 
     public String register(RegisterUserRequest request) {
@@ -184,5 +192,18 @@ public class AuthService {
 
         emailTokenService.setConfirmedAt(token);
         userService.enableUser(user);
+    }
+
+
+    public User authenticate(LoginUserRequest requestDto) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        requestDto.getUsername(),
+                        requestDto.getPassword()
+                )
+        );
+
+        return userRepository.findByUsername(requestDto.getUsername())
+                .orElseThrow();
     }
 }

@@ -1,8 +1,13 @@
 package com.match_intel.backend.controller;
 
 import com.match_intel.backend.dto.request.ChangeEmailBySessionRequest;
+import com.match_intel.backend.dto.request.LoginUserRequest;
 import com.match_intel.backend.dto.request.RegisterUserRequest;
+import com.match_intel.backend.dto.response.LoginResponse;
+import com.match_intel.backend.entity.User;
+import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.service.AuthService;
+import com.match_intel.backend.service.JwtService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +26,9 @@ import java.util.Map;
 public class AuthController {
 
     @Autowired
-    AuthService authService;
+    private AuthService authService;
+    @Autowired
+    private JwtService jwtService;
 
 
     @PostMapping(value = "/register",
@@ -71,5 +78,22 @@ public class AuthController {
     public ResponseEntity<Void> confirmEmail (@RequestParam String token) {
         authService.confirmEmail(token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserRequest loginUserDto) {
+        try {
+            User authenticatedUser = authService.authenticate(loginUserDto);
+            String jwtToken = jwtService.generateToken(authenticatedUser);
+
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setToken(jwtToken);
+            loginResponse.setExpiresIn(jwtService.getExpirationTime());
+
+            return ResponseEntity.ok(loginResponse);
+        } catch (Exception e) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 }
