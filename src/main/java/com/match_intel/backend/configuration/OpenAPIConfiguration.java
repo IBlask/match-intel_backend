@@ -5,6 +5,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +30,9 @@ public class OpenAPIConfiguration {
 
 
         Components components = new Components()
+                .addSecuritySchemes
+                        ("Bearer Authentication", createAPIKeyScheme())
+
                 .addSchemas(
                         "MessageResponse",
                         new Schema<Map<String, String>>()
@@ -53,6 +58,14 @@ public class OpenAPIConfiguration {
         return new OpenAPI()
                 .info(information)
                 .servers(List.of(server))
+                .addSecurityItem(new SecurityRequirement().
+                        addList("Bearer Authentication"))
                 .components(components);
+    }
+
+    private SecurityScheme createAPIKeyScheme() {
+        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .scheme("bearer");
     }
 }

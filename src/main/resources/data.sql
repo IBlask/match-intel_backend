@@ -1,1 +1,4 @@
-INSERT INTO users(id, username, first_name, last_name, email, password, enabled) VALUES ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'jDoe1', 'John', 'Doe', 'blaskovic.ivan1@gmail.com', '$2a$10$/o9PxTASyyvPxy5/6etBeeExHZYBUzkm/7ROcGurq0Z30wyadcAM.', 1);
+INSERT INTO users(id, username, first_name, last_name, email, password, enabled)
+    VALUES
+        ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'jDoe1', 'John', 'Doe', 'blaskovic.ivan1@gmail.com', '$2a$10$/o9PxTASyyvPxy5/6etBeeExHZYBUzkm/7ROcGurq0Z30wyadcAM.', 1),
+        ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', 'jDoe2', 'John', 'Doe', 'blaskovic.ivan1+2@gmail.com', '$2a$10$/o9PxTASyyvPxy5/6etBeeExHZYBUzkm/7ROcGurq0Z30wyadcAM.', 1);
