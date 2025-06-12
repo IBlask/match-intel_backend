@@ -2,15 +2,19 @@ package com.match_intel.backend.service;
 
 import com.match_intel.backend.dto.response.CreateMatchResponse;
 import com.match_intel.backend.entity.Match;
+import com.match_intel.backend.entity.Point;
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.repository.MatchRepository;
+import com.match_intel.backend.repository.PointRepository;
 import com.match_intel.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class MatchService {
@@ -19,6 +23,8 @@ public class MatchService {
     private MatchRepository matchRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PointRepository pointRepository;
 
 
     public CreateMatchResponse createMatch(String username1, String username2, String initialServer) {
@@ -44,5 +50,52 @@ public class MatchService {
         responseDto.setMatchId(match.getId().toString());
         responseDto.setStartTime(match.getStartTime().toString());
         return responseDto;
+    }
+
+    public void addPoint(UUID matchId, String scoringPlayerUsername) {
+        Optional<Match> matchOpt = matchRepository.findById(matchId);
+        if (matchOpt.isEmpty()) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Match not found!");
+        }
+        Match match = matchOpt.get();
+
+        if (match.isFinished()) {
+            throw new ClientErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "The match is already finished. You can't add points to this match."
+            );
+        }
+
+        if (!scoringPlayerUsername.equals(match.getPlayer1().getUsername())
+                && !scoringPlayerUsername.equals(match.getPlayer2().getUsername())
+        ) {
+            throw new ClientErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid scoring player username."
+            );
+        }
+
+        int scoringPlayerNumber = match.getPlayer1().getUsername().equals(scoringPlayerUsername) ? 1 : 2;
+
+        // if match is already in the progress / if the score is not 0:0
+        Optional<Point> parentPointOpt = pointRepository.findTopByMatchIdOrderByCreatedAtDesc(matchId);
+        if (parentPointOpt.isPresent()) {
+            Point parentPoint = parentPointOpt.get();
+
+            Point newPoint = new Point(parentPoint, scoringPlayerNumber);
+            pointRepository.save(newPoint);
+
+            if (newPoint.getPlayer1Sets() == 2 || newPoint.getPlayer2Sets() == 2) {
+                match.setFinished(true);
+                match.setFinalScore(newPoint.getPlayer1Sets() + ":" + newPoint.getPlayer2Sets());
+                matchRepository.save(match);
+            }
+        }
+        // if this is the first point
+        else {
+            int playerToServeNumber = match.getInitialServer().equals(match.getPlayer1().getUsername()) ? 2 : 1;
+            Point newPoint = new Point(match.getId(), scoringPlayerNumber, playerToServeNumber);
+            pointRepository.save(newPoint);
+        }
     }
 }
