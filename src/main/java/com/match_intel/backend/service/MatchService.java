@@ -26,6 +26,12 @@ public class MatchService {
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Player1 not found"));
         User player2 = userRepository.findByUsername(username2)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Player2 not found"));
+        if (!initialServer.equals(player1.getUsername()) || !initialServer.equals(player2.getUsername())) {
+            throw new ClientErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid initial server. Initial server must be one of the players!"
+            );
+        }
 
         Match match = new Match();
         match.setPlayer1(player1);
