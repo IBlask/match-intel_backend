@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -76,4 +77,16 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+
+
+    public List<User> searchUsers(String query) {
+        if (query.isBlank()) {
+            throw new ClientErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "Please provide a search query."
+            );
+        }
+        return userRepository.searchByNameOrUsername(query);
+    }
+
 }
