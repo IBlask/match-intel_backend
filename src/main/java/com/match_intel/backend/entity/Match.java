@@ -39,4 +39,9 @@ public class Match {
     @Column
     @Setter
     private String finalScore = null;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Setter
+    private MatchVisibility visibility = MatchVisibility.PRIVATE;
 }

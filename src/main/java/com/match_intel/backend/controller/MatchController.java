@@ -1,6 +1,7 @@
 package com.match_intel.backend.controller;
 
 import com.match_intel.backend.dto.response.CreateMatchResponse;
+import com.match_intel.backend.entity.MatchVisibility;
 import com.match_intel.backend.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,9 +31,17 @@ public class MatchController {
     public ResponseEntity<CreateMatchResponse> createMatch(
             @RequestParam String player1,
             @RequestParam String player2,
-            @RequestParam String initialServer
+            @RequestParam String initialServer,
+            @RequestParam int visibility
     ) {
-        CreateMatchResponse responseDto = matchService.createMatch(player1, player2, initialServer);
+        MatchVisibility matchVisibility;
+        switch (visibility) {
+            case 2 -> matchVisibility = MatchVisibility.PUBLIC;
+            case 1 -> matchVisibility = MatchVisibility.FOLLOWERS;
+            default -> matchVisibility = MatchVisibility.PRIVATE;
+        }
+
+        CreateMatchResponse responseDto = matchService.createMatch(player1, player2, initialServer, matchVisibility);
         return ResponseEntity.ok(responseDto);
     }
 

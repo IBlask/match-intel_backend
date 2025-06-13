@@ -2,6 +2,7 @@ package com.match_intel.backend.service;
 
 import com.match_intel.backend.dto.response.CreateMatchResponse;
 import com.match_intel.backend.entity.Match;
+import com.match_intel.backend.entity.MatchVisibility;
 import com.match_intel.backend.entity.Point;
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.exception.ClientErrorException;
@@ -27,7 +28,7 @@ public class MatchService {
     private PointRepository pointRepository;
 
 
-    public CreateMatchResponse createMatch(String username1, String username2, String initialServer) {
+    public CreateMatchResponse createMatch(String username1, String username2, String initialServer, MatchVisibility visibility) {
         User player1 = userRepository.findByUsername(username1)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Player1 not found"));
         User player2 = userRepository.findByUsername(username2)
@@ -44,6 +45,7 @@ public class MatchService {
         match.setPlayer2(player2);
         match.setInitialServer(initialServer);
         match.setStartTime(LocalDateTime.now());
+        match.setVisibility(visibility);
         matchRepository.save(match);
 
         CreateMatchResponse responseDto = new CreateMatchResponse();
