@@ -1,6 +1,7 @@
 package com.match_intel.backend.controller;
 
 import com.match_intel.backend.dto.response.CreateMatchResponse;
+import com.match_intel.backend.entity.Match;
 import com.match_intel.backend.entity.MatchVisibility;
 import com.match_intel.backend.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,11 +10,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -56,5 +57,15 @@ public class MatchController {
         UUID matchUUID = UUID.fromString(matchId);
         matchService.addPoint(matchUUID, scoringPlayerUsername);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/of/{username}")
+    public ResponseEntity<?> getMatchesOfUser(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable String username
+    ) {
+        String currentUsername = userDetails.getUsername();
+        List<Match> visibleMatches = matchService.getVisibleMatches(currentUsername, username);
+        return ResponseEntity.ok(visibleMatches);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +27,8 @@ public class MatchService {
     private UserRepository userRepository;
     @Autowired
     private PointRepository pointRepository;
+    @Autowired
+    private FollowService followService;
 
 
     public CreateMatchResponse createMatch(String username1, String username2, String initialServer, MatchVisibility visibility) {
@@ -99,5 +102,27 @@ public class MatchService {
             Point newPoint = new Point(match.getId(), scoringPlayerNumber, playerToServeNumber);
             pointRepository.save(newPoint);
         }
+    }
+
+    public List<Match> getVisibleMatches(String requesterUsername, String targetUsername) {
+        User requester = userRepository.findByUsername(requesterUsername)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Requester not found"));
+        User target = userRepository.findByUsername(targetUsername)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Target user not found"));
+
+        List<Match> allMatches = matchRepository.findByPlayer1OrPlayer2(target, target);
+
+        return allMatches.stream().filter(match -> {
+            switch (match.getVisibility()) {
+                case PUBLIC -> { return true; }
+                case FOLLOWERS -> {
+                    return followService.isFollowing(requester.getUsername(), target.getUsername());
+                }
+                case PRIVATE -> {
+                    return false;
+                }
+            }
+            return false;
+        }).toList();
     }
 }
