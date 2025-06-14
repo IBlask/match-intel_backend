@@ -1,11 +1,9 @@
 package com.match_intel.backend.service;
 
 import com.match_intel.backend.dto.response.CreateMatchResponse;
-import com.match_intel.backend.entity.Match;
-import com.match_intel.backend.entity.MatchVisibility;
-import com.match_intel.backend.entity.Point;
-import com.match_intel.backend.entity.User;
+import com.match_intel.backend.entity.*;
 import com.match_intel.backend.exception.ClientErrorException;
+import com.match_intel.backend.repository.FollowRequestRepository;
 import com.match_intel.backend.repository.MatchRepository;
 import com.match_intel.backend.repository.PointRepository;
 import com.match_intel.backend.repository.UserRepository;
@@ -29,6 +27,8 @@ public class MatchService {
     private PointRepository pointRepository;
     @Autowired
     private FollowService followService;
+    @Autowired
+    private FollowRequestRepository followRequestRepository;
 
 
     public CreateMatchResponse createMatch(String username1, String username2, String initialServer, MatchVisibility visibility) {
@@ -124,5 +124,12 @@ public class MatchService {
             }
             return false;
         }).toList();
+    }
+
+    public List<Match> getVisibleMatchesFromFollowedUsers(String requesterUsername) {
+        User requester = userRepository.findByUsername(requesterUsername)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Requester not found"));
+
+        return matchRepository.findVisibleMatchesOfFollowees(requester.getId());
     }
 }

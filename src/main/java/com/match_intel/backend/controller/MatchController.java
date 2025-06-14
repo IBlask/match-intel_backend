@@ -68,4 +68,14 @@ public class MatchController {
         List<Match> visibleMatches = matchService.getVisibleMatches(currentUsername, username);
         return ResponseEntity.ok(visibleMatches);
     }
+
+    @GetMapping("/matches/followed")
+    public ResponseEntity<List<Match>> getFollowedVisibleMatches(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String username = userDetails.getUsername();
+        List<Match> matches = matchService.getVisibleMatchesFromFollowedUsers(username);
+        return ResponseEntity.ok(matches);
+    }
+
 }
