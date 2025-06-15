@@ -92,7 +92,11 @@ public class MatchService {
 
             if (newPoint.getPlayer1Sets() == 2 || newPoint.getPlayer2Sets() == 2) {
                 match.setFinished(true);
-                match.setFinalScore(newPoint.getPlayer1Sets() + ":" + newPoint.getPlayer2Sets());
+                match.setFinalScore(newPoint.getPlayer1Sets() + " : " + newPoint.getPlayer2Sets());
+                matchRepository.save(match);
+            }
+            else {
+                match.setFinalScore(newPoint.getPlayer1Sets() + " : " + newPoint.getPlayer2Sets());
                 matchRepository.save(match);
             }
         }

@@ -38,7 +38,7 @@ public class Match {
 
     @Column
     @Setter
-    private String finalScore = null;
+    private String finalScore = "0 : 0";
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
