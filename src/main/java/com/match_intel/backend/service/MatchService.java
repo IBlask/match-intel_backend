@@ -128,7 +128,7 @@ public class MatchService {
 
     public List<Match> getVisibleMatchesFromFollowedUsers(String requesterUsername) {
         User requester = userRepository.findByUsername(requesterUsername)
-                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Requester not found"));
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Requester not found"));    
 
         return matchRepository.findVisibleMatchesOfFollowees(requester.getId());
     }

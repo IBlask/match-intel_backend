@@ -69,7 +69,7 @@ public class MatchController {
         return ResponseEntity.ok(visibleMatches);
     }
 
-    @GetMapping("/matches/followed")
+    @GetMapping("/followed")
     public ResponseEntity<List<Match>> getFollowedVisibleMatches(
             @AuthenticationPrincipal UserDetails userDetails
     ) {
