@@ -3,6 +3,7 @@ package com.match_intel.backend.controller;
 import com.match_intel.backend.dto.response.CreateMatchResponse;
 import com.match_intel.backend.entity.Match;
 import com.match_intel.backend.entity.MatchVisibility;
+import com.match_intel.backend.entity.Point;
 import com.match_intel.backend.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,13 +51,13 @@ public class MatchController {
     @PostMapping("/add_point")
     @ApiResponse(responseCode = "201",
             description = "Point added successfully")
-    public ResponseEntity<Void> addPoint(
+    public ResponseEntity<Point> addPoint(
             @RequestParam String matchId,
             @RequestParam String scoringPlayerUsername
     ) {
         UUID matchUUID = UUID.fromString(matchId);
-        matchService.addPoint(matchUUID, scoringPlayerUsername);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Point point = matchService.addPoint(matchUUID, scoringPlayerUsername);
+        return ResponseEntity.status(HttpStatus.CREATED).body(point);
     }
 
     @GetMapping("/of/{username}")

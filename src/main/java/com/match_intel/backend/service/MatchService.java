@@ -57,7 +57,9 @@ public class MatchService {
         return responseDto;
     }
 
-    public void addPoint(UUID matchId, String scoringPlayerUsername) {
+    public Point addPoint(UUID matchId, String scoringPlayerUsername) {
+        Point newPoint;
+
         Optional<Match> matchOpt = matchRepository.findById(matchId);
         if (matchOpt.isEmpty()) {
             throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Match not found!");
@@ -87,25 +89,23 @@ public class MatchService {
         if (parentPointOpt.isPresent()) {
             Point parentPoint = parentPointOpt.get();
 
-            Point newPoint = new Point(parentPoint, scoringPlayerNumber);
+            newPoint = new Point(parentPoint, scoringPlayerNumber);
             pointRepository.save(newPoint);
 
             if (newPoint.getPlayer1Sets() == 2 || newPoint.getPlayer2Sets() == 2) {
                 match.setFinished(true);
-                match.setFinalScore(newPoint.getPlayer1Sets() + " : " + newPoint.getPlayer2Sets());
-                matchRepository.save(match);
             }
-            else {
-                match.setFinalScore(newPoint.getPlayer1Sets() + " : " + newPoint.getPlayer2Sets());
-                matchRepository.save(match);
-            }
+            match.setFinalScore(newPoint.getPlayer1Sets() + " : " + newPoint.getPlayer2Sets());
+            matchRepository.save(match);
         }
         // if this is the first point
         else {
             int playerToServeNumber = match.getInitialServer().equals(match.getPlayer1().getUsername()) ? 2 : 1;
-            Point newPoint = new Point(match.getId(), scoringPlayerNumber, playerToServeNumber);
+            newPoint = new Point(match.getId(), scoringPlayerNumber, playerToServeNumber);
             pointRepository.save(newPoint);
         }
+
+        return newPoint;
     }
 
     public List<Match> getVisibleMatches(String requesterUsername, String targetUsername) {
