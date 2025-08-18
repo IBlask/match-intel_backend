@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface PointRepository extends JpaRepository<Point, UUID> {
     Optional<Point> findTopByMatchIdOrderByCreatedAtDesc(UUID matchId);
+    int countByMatchIdAndPlayerWhoScoredAndForced(UUID matchId, String playerWhoScored, boolean forced);
 }

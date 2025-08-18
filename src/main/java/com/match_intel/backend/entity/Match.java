@@ -45,4 +45,12 @@ public class Match {
     @Column(nullable = false)
     @Setter
     private MatchVisibility visibility = MatchVisibility.PRIVATE;
+
+    @Column
+    @Setter
+    private Integer player1Efficiency;
+
+    @Column
+    @Setter
+    private Integer player2Efficiency;
 }

@@ -46,11 +46,19 @@ public class Point {
     @Column(nullable = false)
     private String player2Points;
 
+    @Column(nullable = false)
+    private String playerWhoScored;
 
-    public Point(UUID matchId, int scoringPlayerNumber, int playerToServe) {
+    @Column(nullable = false)
+    private boolean forced;
+
+
+    public Point(UUID matchId, int scoringPlayerNumber, int playerToServe, boolean forced, String playerWhoScored) {
         this.matchId = matchId;
         this.playerToServe = playerToServe;
         this.createdAt = LocalDateTime.now();
+        this.forced = forced;
+        this.playerWhoScored = playerWhoScored;
 
         this.player1Sets = 0;
         this.player2Sets = 0;
@@ -67,11 +75,13 @@ public class Point {
         }
     }
 
-    public Point(Point parentPoint, int scoringPlayerNumber) {
+    public Point(Point parentPoint, int scoringPlayerNumber, boolean forced, String playerWhoScored) {
         this.matchId = parentPoint.getMatchId();
         this.parentPoint = parentPoint.getId();
         this.createdAt = LocalDateTime.now();
         this.playerToServe = parentPoint.playerToServe;
+        this.forced = forced;
+        this.playerWhoScored = playerWhoScored;
 
         this.player1Sets = parentPoint.player1Sets;
         this.player2Sets = parentPoint.player2Sets;

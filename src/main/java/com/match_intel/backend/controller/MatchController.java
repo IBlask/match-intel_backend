@@ -53,10 +53,11 @@ public class MatchController {
             description = "Point added successfully")
     public ResponseEntity<Point> addPoint(
             @RequestParam String matchId,
-            @RequestParam String scoringPlayerUsername
+            @RequestParam String scoringPlayerUsername,
+            @RequestParam Boolean forced
     ) {
         UUID matchUUID = UUID.fromString(matchId);
-        Point point = matchService.addPoint(matchUUID, scoringPlayerUsername);
+        Point point = matchService.addPoint(matchUUID, scoringPlayerUsername, forced);
         return ResponseEntity.status(HttpStatus.CREATED).body(point);
     }
 

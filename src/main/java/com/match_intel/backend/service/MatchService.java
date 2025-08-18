@@ -57,7 +57,14 @@ public class MatchService {
         return responseDto;
     }
 
-    public Point addPoint(UUID matchId, String scoringPlayerUsername) {
+    public Point addPoint(UUID matchId, String scoringPlayerUsername, Boolean forced) {
+        if (scoringPlayerUsername == null) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Please provide scoring player username.");
+        }
+        if (forced == null) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Please provide whether the point is forced or not.");
+        }
+
         Point newPoint;
 
         Optional<Match> matchOpt = matchRepository.findById(matchId);
@@ -89,19 +96,54 @@ public class MatchService {
         if (parentPointOpt.isPresent()) {
             Point parentPoint = parentPointOpt.get();
 
-            newPoint = new Point(parentPoint, scoringPlayerNumber);
+            newPoint = new Point(parentPoint, scoringPlayerNumber, forced, scoringPlayerUsername);
             pointRepository.save(newPoint);
+
+            int player1Efficiency = 0;
+            int player2Efficiency = 0;
 
             if (newPoint.getPlayer1Sets() == 2 || newPoint.getPlayer2Sets() == 2) {
                 match.setFinished(true);
+
+                // Calculate efficiency points for both players
+                int player1ForceCount = pointRepository.countByMatchIdAndPlayerWhoScoredAndForced(
+                        match.getId(),
+                        match.getPlayer1().getUsername(),
+                        true
+                );
+                int player2ForceCount = pointRepository.countByMatchIdAndPlayerWhoScoredAndForced(
+                        match.getId(),
+                        match.getPlayer2().getUsername(),
+                        true
+                );
+                int player1UnforcedCount = pointRepository.countByMatchIdAndPlayerWhoScoredAndForced(
+                        match.getId(),
+                        match.getPlayer1().getUsername(),
+                        false
+                );
+                int player2UnforcedCount = pointRepository.countByMatchIdAndPlayerWhoScoredAndForced(
+                        match.getId(),
+                        match.getPlayer2().getUsername(),
+                        false
+                );
+
+                int player1EfficiencyPoints = (player1ForceCount * 2) + player1UnforcedCount;
+                int player2EfficiencyPoints = (player2ForceCount * 2) + player2UnforcedCount;
+
+                int totalEfficiencyPoints = player1EfficiencyPoints + player2EfficiencyPoints;
+                player1Efficiency = totalEfficiencyPoints == 0 ? 0 : (player1EfficiencyPoints * 100) / totalEfficiencyPoints;
+                player2Efficiency = totalEfficiencyPoints == 0 ? 0 : 100 - player1Efficiency;
             }
+
+            match.setPlayer1Efficiency(player1Efficiency);
+            match.setPlayer2Efficiency(player2Efficiency);
             match.setFinalScore(newPoint.getPlayer1Sets() + " : " + newPoint.getPlayer2Sets());
             matchRepository.save(match);
         }
         // if this is the first point
         else {
             int playerToServeNumber = match.getInitialServer().equals(match.getPlayer1().getUsername()) ? 2 : 1;
-            newPoint = new Point(match.getId(), scoringPlayerNumber, playerToServeNumber);
+            newPoint = new Point(match.getId(), scoringPlayerNumber, playerToServeNumber, forced, scoringPlayerUsername);
             pointRepository.save(newPoint);
         }
 
