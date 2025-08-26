@@ -3,10 +3,7 @@ package com.match_intel.backend.service;
 import com.match_intel.backend.dto.response.CreateMatchResponse;
 import com.match_intel.backend.entity.*;
 import com.match_intel.backend.exception.ClientErrorException;
-import com.match_intel.backend.repository.FollowRequestRepository;
-import com.match_intel.backend.repository.MatchRepository;
-import com.match_intel.backend.repository.PointRepository;
-import com.match_intel.backend.repository.UserRepository;
+import com.match_intel.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,6 +27,8 @@ public class MatchService {
     private FollowService followService;
     @Autowired
     private FollowRequestRepository followRequestRepository;
+    @Autowired
+    private LikeRepository likeRepository;
 
 
     public CreateMatchResponse createMatch(String username1, String username2, String initialServer, MatchVisibility visibility) {
@@ -181,5 +180,38 @@ public class MatchService {
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Requester not found"));    
 
         return matchRepository.findVisibleMatchesOfFollowees(requester.getId());
+    }
+
+    public void likeMatch(String username, UUID matchId) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "User not found"));
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Match not found"));
+
+        if (likeRepository.existsByUser_UsernameAndMatch_Id(username, matchId)) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "You have already liked this match.");
+        }
+
+        Like like = new Like();
+        like.setUser(user);
+        like.setMatch(match);
+        likeRepository.save(like);
+    }
+
+    public long getLikesCount(UUID matchId) {
+        if (matchRepository.findById(matchId).isEmpty()) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Match not found");
+        }
+
+        return likeRepository.countByMatch_Id(matchId);
+    }
+
+    public List<User> getLikesList(UUID matchId) {
+        if (matchRepository.findById(matchId).isEmpty()) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Match not found");
+        }
+
+        List<Like> likes = likeRepository.findAllByMatch_Id(matchId);
+        return likes.stream().map(Like::getUser).toList();
     }
 }

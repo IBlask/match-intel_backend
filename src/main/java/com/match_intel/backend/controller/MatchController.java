@@ -4,6 +4,7 @@ import com.match_intel.backend.dto.response.CreateMatchResponse;
 import com.match_intel.backend.entity.Match;
 import com.match_intel.backend.entity.MatchVisibility;
 import com.match_intel.backend.entity.Point;
+import com.match_intel.backend.entity.User;
 import com.match_intel.backend.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -80,4 +81,32 @@ public class MatchController {
         return ResponseEntity.ok(matches);
     }
 
+    @PostMapping("/like")
+    public ResponseEntity<?> likeMatch(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam String matchId
+    ) {
+        String username = userDetails.getUsername();
+        UUID matchUUID = UUID.fromString(matchId);
+        matchService.likeMatch(username, matchUUID);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/likes_count")
+    public ResponseEntity<Long> getLikesCount(
+            @RequestParam String matchId
+    ) {
+        UUID matchUUID = UUID.fromString(matchId);
+        long likesCount = matchService.getLikesCount(matchUUID);
+        return ResponseEntity.ok(likesCount);
+    }
+
+    @GetMapping("/likes_list")
+    public ResponseEntity<List<User>> getLikesList(
+            @RequestParam String matchId
+    ) {
+        UUID matchUUID = UUID.fromString(matchId);
+        List<User> likesList = matchService.getLikesList(matchUUID);
+        return ResponseEntity.ok(likesList);
+    }
 }
