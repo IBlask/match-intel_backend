@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,11 +44,14 @@ public class MatchService {
             );
         }
 
+        LocalDateTime dateTimeStarted = LocalDateTime.now();
+
         Match match = new Match();
         match.setPlayer1(player1);
         match.setPlayer2(player2);
         match.setInitialServer(initialServer);
-        match.setStartTime(LocalDateTime.now());
+        match.setStartDate(dateTimeStarted.format(DateTimeFormatter.ofPattern("dd.MM.yyyy.")));
+        match.setStartTime(dateTimeStarted.format(DateTimeFormatter.ofPattern("HH:mm")));
         match.setVisibility(visibility);
         matchRepository.save(match);
 

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -31,7 +32,11 @@ public class Match {
 
     @Column(nullable = false)
     @Setter
-    private LocalDateTime startTime;
+    private String startDate;
+
+    @Column(nullable = false)
+    @Setter
+    private String startTime;
 
     @Column(nullable = false)
     @Setter
