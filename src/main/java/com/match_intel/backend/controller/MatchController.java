@@ -16,7 +16,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -82,14 +84,17 @@ public class MatchController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<?> likeMatch(
+    public ResponseEntity<Map<String, Boolean>> likeMatch(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam String matchId
     ) {
         String username = userDetails.getUsername();
         UUID matchUUID = UUID.fromString(matchId);
-        matchService.likeMatch(username, matchUUID);
-        return ResponseEntity.ok().build();
+        boolean liked = matchService.likeMatch(username, matchUUID);
+
+        Map<String, Boolean> returnMap = new HashMap<>();
+        returnMap.put("liked", liked);
+        return ResponseEntity.ok(returnMap);
     }
 
     @GetMapping("/likes_count")

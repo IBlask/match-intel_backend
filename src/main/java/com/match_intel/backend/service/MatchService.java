@@ -179,23 +179,38 @@ public class MatchService {
         User requester = userRepository.findByUsername(requesterUsername)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Requester not found"));    
 
-        return matchRepository.findVisibleMatchesOfFollowees(requester.getId());
+        List<Match> matches = matchRepository.findVisibleMatchesOfFollowees(requester.getId());
+        matches.forEach(match -> {
+            match.setLikedByUser(likeRepository.existsByUser_UsernameAndMatch_Id(requesterUsername, match.getId()));
+        });
+
+        return matches;
     }
 
-    public void likeMatch(String username, UUID matchId) {
+    public boolean likeMatch(String username, UUID matchId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "User not found"));
         Match match = matchRepository.findById(matchId)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Match not found"));
 
-        if (likeRepository.existsByUser_UsernameAndMatch_Id(username, matchId)) {
-            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "You have already liked this match.");
-        }
+        Optional<Like> likeOpt = likeRepository.findByMatch_IdAndUser_Username(matchId, username);
 
-        Like like = new Like();
-        like.setUser(user);
-        like.setMatch(match);
-        likeRepository.save(like);
+        if (likeOpt.isPresent()) {
+            likeRepository.delete(likeOpt.get());
+            match.setNumberOfLikes(match.getNumberOfLikes() - 1);
+            matchRepository.save(match);
+            return false;
+        }
+        else {
+            Like like = new Like();
+            like.setUser(user);
+            like.setMatch(match);
+            likeRepository.save(like);
+
+            match.setNumberOfLikes(match.getNumberOfLikes() + 1);
+            matchRepository.save(match);
+            return true;
+        }
     }
 
     public long getLikesCount(UUID matchId) {

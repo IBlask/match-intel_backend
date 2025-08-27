@@ -58,4 +58,14 @@ public class Match {
     @Column
     @Setter
     private Integer player2Efficiency;
+
+    @Column(nullable = false)
+    @Getter
+    @Setter
+    private int numberOfLikes = 0;
+
+
+    @Transient
+    @Setter
+    private boolean likedByUser;
 }
