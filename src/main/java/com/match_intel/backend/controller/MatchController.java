@@ -1,10 +1,7 @@
 package com.match_intel.backend.controller;
 
 import com.match_intel.backend.dto.response.CreateMatchResponse;
-import com.match_intel.backend.entity.Match;
-import com.match_intel.backend.entity.MatchVisibility;
-import com.match_intel.backend.entity.Point;
-import com.match_intel.backend.entity.User;
+import com.match_intel.backend.entity.*;
 import com.match_intel.backend.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -113,5 +110,33 @@ public class MatchController {
         UUID matchUUID = UUID.fromString(matchId);
         List<User> likesList = matchService.getLikesList(matchUUID);
         return ResponseEntity.ok(likesList);
+    }
+
+    @PostMapping("/comment/{matchId}")
+    public ResponseEntity<Void> commentMatch(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable String matchId,
+            @RequestParam String comment
+    ) {
+        String username = userDetails.getUsername();
+        UUID matchUUID = UUID.fromString(matchId);
+        matchService.commentMatch(username, matchUUID, comment);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/comments_list/{matchId}")
+    public ResponseEntity<List<Comment>> getComments(
+            @PathVariable String matchId
+    ) {
+        UUID matchUUID = UUID.fromString(matchId);
+        return ResponseEntity.ok(matchService.getComments(matchUUID));
+    }
+
+    @GetMapping("/comments_count/{matchId}")
+    public ResponseEntity<Long> getCommentsCount(
+            @PathVariable String matchId
+    ) {
+        UUID matchUUID = UUID.fromString(matchId);
+        return ResponseEntity.ok(matchService.getCommentsCount(matchUUID));
     }
 }

@@ -6,6 +6,7 @@ import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,8 @@ public class MatchService {
     private FollowRequestRepository followRequestRepository;
     @Autowired
     private LikeRepository likeRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
 
     public CreateMatchResponse createMatch(String username1, String username2, String initialServer, MatchVisibility visibility) {
@@ -228,5 +231,29 @@ public class MatchService {
 
         List<Like> likes = likeRepository.findAllByMatch_Id(matchId);
         return likes.stream().map(Like::getUser).toList();
+    }
+
+    public void commentMatch(String username, UUID matchId, String comment) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "User not found"));
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Match not found"));
+
+        Comment newComment = new Comment();
+        newComment.setMatch(match);
+        newComment.setUser(user);
+        newComment.setComment(comment);
+        commentRepository.save(newComment);
+
+        match.setNumberOfComments(match.getNumberOfComments() + 1);
+        matchRepository.save(match);
+    }
+
+    public List<Comment> getComments(UUID matchId) {
+        return commentRepository.findAllByMatch_Id(matchId);
+    }
+
+    public Long getCommentsCount(UUID matchUUID) {
+        return (long) commentRepository.findAllByMatch_Id(matchUUID).size();
     }
 }

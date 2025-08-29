@@ -64,6 +64,10 @@ public class Match {
     @Setter
     private int numberOfLikes = 0;
 
+    @Column(nullable = false)
+    @Getter
+    @Setter
+    private int numberOfComments = 0;
 
     @Transient
     @Setter
