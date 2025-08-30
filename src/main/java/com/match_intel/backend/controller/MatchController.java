@@ -47,6 +47,15 @@ public class MatchController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @GetMapping("/{matchId}")
+    public ResponseEntity<Match> getMatchById(
+            @PathVariable String matchId
+    ) {
+        UUID matchUUID = UUID.fromString(matchId);
+        Match match = matchService.getMatch(matchUUID);
+        return ResponseEntity.ok(match);
+    }
+
     @Operation(summary = "Adding a point")
     @PostMapping("/add_point")
     @ApiResponse(responseCode = "201",

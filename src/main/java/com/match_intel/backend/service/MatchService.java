@@ -6,7 +6,6 @@ import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -105,6 +104,40 @@ public class MatchService {
             newPoint = new Point(parentPoint, scoringPlayerNumber, forced, scoringPlayerUsername);
             pointRepository.save(newPoint);
 
+            // Update sets scores
+            if (newPoint.getPlayer1Points().equals("0") && newPoint.getPlayer2Points().equals("0")) {
+                switch (newPoint.getPlayer1Sets() + newPoint.getPlayer2Sets()) {
+                    case 0 -> {
+                        match.setSet1Score(newPoint.getPlayer1Games() + " : " + newPoint.getPlayer2Games());
+                    }
+                    case 1 -> {
+                        if (newPoint.getPlayer1Games() == 0 && newPoint.getPlayer2Games() == 0) {
+                            String[] splitScore = match.getSet1Score().split("\\s*:\\s*");
+                            splitScore[scoringPlayerNumber-1] = String.valueOf(Integer.parseInt(splitScore[scoringPlayerNumber-1]) + 1);
+                            match.setSet1Score(splitScore[0] + " : " + splitScore[1]);
+                        }
+                        else {
+                            match.setSet2Score(newPoint.getPlayer1Games() + " : " + newPoint.getPlayer2Games());
+                        }
+                    }
+                    case 2 -> {
+                        if (newPoint.getPlayer1Games() == 0 && newPoint.getPlayer2Games() == 0) {
+                            String[] splitScore = match.getSet2Score().split("\\s*:\\s*");
+                            splitScore[scoringPlayerNumber-1] = String.valueOf(Integer.parseInt(splitScore[scoringPlayerNumber-1]) + 1);
+                            match.setSet2Score(splitScore[0] + " : " + splitScore[1]);
+                        }
+                        else {
+                            match.setSet3Score(newPoint.getPlayer1Games() + " : " + newPoint.getPlayer2Games());
+                        }
+                    }
+                    case 3 -> {
+                        String[] splitScore = match.getSet3Score().split("\\s*:\\s*");
+                        splitScore[scoringPlayerNumber-1] = String.valueOf(Integer.parseInt(splitScore[scoringPlayerNumber-1]) + 1);
+                        match.setSet3Score(splitScore[0] + " : " + splitScore[1]);
+                    }
+                }
+            }
+
             int player1Efficiency = 0;
             int player2Efficiency = 0;
 
@@ -188,6 +221,78 @@ public class MatchService {
         });
 
         return matches;
+    }
+
+    public Match getMatch(UUID matchId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Match not found"));
+
+        Point lastPoint = pointRepository.findTopByMatchIdOrderByCreatedAtDesc(matchId)
+                .orElse(null);
+
+        if (lastPoint == null) {
+            match.setMatchStats(null);
+            return match;
+        }
+
+        MatchStats matchStats = new MatchStats();
+        matchStats.setPoint(lastPoint);
+
+        int[][] forcedErrors = new int[][]{{0,0,0},{0,0,0}}; // [player][set]
+        int[][] unforcedErrors = new int[][]{{0,0,0},{0,0,0}}; // [player][set]
+
+        List<Point> allPoints = pointRepository.findAllByMatchId(matchId);
+        allPoints.forEach( point -> {
+            int errorPlayerIndex = match.getPlayer1().getUsername().equals(point.getPlayerWhoScored()) ? 1 : 0;
+            int numberOfSets = point.getPlayer1Sets() + point.getPlayer2Sets();
+            if (point.getPlayer1Games()
+                    + point.getPlayer2Games()
+                    + Integer.parseInt(point.getPlayer1Points())
+                    + Integer.parseInt(point.getPlayer2Points())  == 0) {
+                numberOfSets -= 1;
+            }
+            if (point.isForced()) {
+                forcedErrors[errorPlayerIndex][numberOfSets]++;
+            }
+            else {
+                unforcedErrors[errorPlayerIndex][numberOfSets]++;
+            }
+        });
+
+        matchStats.setPlayer1Set1UnforcedErrors(unforcedErrors[0][0]);
+        matchStats.setPlayer1Set2UnforcedErrors(unforcedErrors[0][1]);
+        matchStats.setPlayer1Set3UnforcedErrors(unforcedErrors[0][2]);
+        matchStats.setPlayer1Set1ForcedErrors(forcedErrors[0][0]);
+        matchStats.setPlayer1Set2ForcedErrors(forcedErrors[0][1]);
+        matchStats.setPlayer1Set3ForcedErrors(forcedErrors[0][2]);
+        matchStats.setPlayer2Set1UnforcedErrors(unforcedErrors[1][0]);
+        matchStats.setPlayer2Set2UnforcedErrors(unforcedErrors[1][1]);
+        matchStats.setPlayer2Set3UnforcedErrors(unforcedErrors[1][2]);
+        matchStats.setPlayer2Set1ForcedErrors(forcedErrors[1][0]);
+        matchStats.setPlayer2Set2ForcedErrors(forcedErrors[1][1]);
+        matchStats.setPlayer2Set3ForcedErrors(forcedErrors[1][2]);
+
+        // Efficiency calculation
+        int player1Set1EfficiencyPoints = matchStats.getPlayer2Set1ForcedErrors() * 2 + matchStats.getPlayer2Set1UnforcedErrors();
+        int player2Set1EfficiencyPoints = matchStats.getPlayer1Set1ForcedErrors() * 2 + matchStats.getPlayer1Set1UnforcedErrors();
+        int totalSet1EfficiencyPoints = player1Set1EfficiencyPoints + player2Set1EfficiencyPoints;
+        matchStats.setPlayer1Set1Efficiency(totalSet1EfficiencyPoints == 0 ? 0 : (player1Set1EfficiencyPoints * 100) / totalSet1EfficiencyPoints);
+        matchStats.setPlayer2Set1Efficiency(totalSet1EfficiencyPoints == 0 ? 0 : 100 - matchStats.getPlayer1Set1Efficiency());
+
+        int player1Set2EfficiencyPoints = matchStats.getPlayer2Set2ForcedErrors() * 2 + matchStats.getPlayer2Set2UnforcedErrors();
+        int player2Set2EfficiencyPoints = matchStats.getPlayer1Set2ForcedErrors() * 2 + matchStats.getPlayer1Set2UnforcedErrors();
+        int totalSet2EfficiencyPoints = player1Set2EfficiencyPoints + player2Set2EfficiencyPoints;
+        matchStats.setPlayer1Set2Efficiency(totalSet2EfficiencyPoints == 0 ? 0 : (player1Set2EfficiencyPoints * 100) / totalSet2EfficiencyPoints);
+        matchStats.setPlayer2Set2Efficiency(totalSet2EfficiencyPoints == 0 ? 0 : 100 - matchStats.getPlayer1Set2Efficiency());
+
+        int player1Set3EfficiencyPoints = matchStats.getPlayer2Set3ForcedErrors() * 2 + matchStats.getPlayer2Set3UnforcedErrors();
+        int player2Set3EfficiencyPoints = matchStats.getPlayer1Set3ForcedErrors() * 2 + matchStats.getPlayer1Set3UnforcedErrors();
+        int totalSet3EfficiencyPoints = player1Set3EfficiencyPoints + player2Set3EfficiencyPoints;
+        matchStats.setPlayer1Set3Efficiency(totalSet3EfficiencyPoints == 0 ? 0 : (player1Set3EfficiencyPoints * 100) / totalSet3EfficiencyPoints);
+        matchStats.setPlayer2Set3Efficiency(totalSet3EfficiencyPoints == 0 ? 0 : 100 - matchStats.getPlayer1Set3Efficiency());
+
+        match.setMatchStats(matchStats);
+        return match;
     }
 
     public boolean likeMatch(String username, UUID matchId) {

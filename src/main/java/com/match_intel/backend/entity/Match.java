@@ -3,9 +3,8 @@ package com.match_intel.backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -60,14 +59,28 @@ public class Match {
     private Integer player2Efficiency;
 
     @Column(nullable = false)
-    @Getter
     @Setter
     private int numberOfLikes = 0;
 
     @Column(nullable = false)
-    @Getter
     @Setter
     private int numberOfComments = 0;
+
+    @Column
+    @Setter
+    private String set1Score = null;
+
+    @Column
+    @Setter
+    private String set2Score = null;
+
+    @Column
+    @Setter
+    private String set3Score = null;
+
+    @Transient
+    @Setter
+    private MatchStats matchStats;
 
     @Transient
     @Setter
