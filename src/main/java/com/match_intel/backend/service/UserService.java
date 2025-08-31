@@ -1,9 +1,13 @@
 package com.match_intel.backend.service;
 
 import com.match_intel.backend.dto.request.RegisterUserRequest;
+import com.match_intel.backend.dto.response.UserDto;
+import com.match_intel.backend.entity.FollowRequestStatus;
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.exception.GeneralUnhandledException;
+import com.match_intel.backend.repository.FollowRequestRepository;
+import com.match_intel.backend.repository.MatchRepository;
 import com.match_intel.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +25,10 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private FollowRequestRepository followRequestRepository;
+    @Autowired
+    private MatchRepository matchRepository;
 
 
     public Optional<User> getUserById(UUID id) {
@@ -89,4 +97,31 @@ public class UserService {
         return userRepository.searchByNameOrUsername(query);
     }
 
+    public UserDto getUserByUsername(
+            String currentUsername,
+            String username
+    ) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "User not found"));
+
+        User currentUser = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Current user not found"));
+
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        userDto.setUsername(user.getUsername());
+        userDto.setFollowing(followRequestRepository.findByFollowerAndStatus(user, FollowRequestStatus.ACCEPTED).size());
+        userDto.setFollowers(followRequestRepository.findByFolloweeAndStatus(user, FollowRequestStatus.ACCEPTED).size());
+
+        if (currentUsername.equals(username)) {
+            userDto.setMatches(matchRepository.findByPlayer1OrPlayer2(user, user));
+        }
+        else {
+            userDto.setMatches(matchRepository.findVisibleMatchesOfFollowees(currentUser.getId()));
+        }
+
+        return userDto;
+    }
 }
