@@ -8,6 +8,7 @@ import com.match_intel.backend.dto.response.ClubDto;
 import com.match_intel.backend.entity.*;
 import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.repository.ClubCourtRepository;
+import com.match_intel.backend.repository.ClubFollowRepository;
 import com.match_intel.backend.repository.ClubMemberRepository;
 import com.match_intel.backend.repository.ClubRepository;
 import com.match_intel.backend.repository.UserRepository;
@@ -34,6 +35,10 @@ public class ClubService {
     private UserRepository userRepository;
     @Autowired
     private EmailValidator emailValidator;
+    @Autowired
+    private ClubFollowRepository clubFollowRepository;
+    @Autowired
+    private ClubFollowService clubFollowService;
 
     @Transactional
     public ClubDto registerClub(String ownerUsername, String name, String address, String email,
@@ -320,8 +325,8 @@ public class ClubService {
                 club.getReservationType(),
                 club.getAverageRating(),
                 club.getNumberOfReviews(),
-                0,
-                false,
+                (int) clubFollowService.getFollowersCount(club.getId()),
+                clubFollowService.isFollowing(requesterUsername, club.getId()),
                 isClubAdmin(requesterUsername, club.getId()),
                 club.getCreatedAt()
         );
