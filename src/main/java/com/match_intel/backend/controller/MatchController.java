@@ -34,7 +34,8 @@ public class MatchController {
             @RequestParam String player1,
             @RequestParam String player2,
             @RequestParam String initialServer,
-            @RequestParam int visibility
+            @RequestParam int visibility,
+            @RequestParam(required = false) String clubId
     ) {
         MatchVisibility matchVisibility;
         switch (visibility) {
@@ -43,7 +44,8 @@ public class MatchController {
             default -> matchVisibility = MatchVisibility.PRIVATE;
         }
 
-        CreateMatchResponse responseDto = matchService.createMatch(player1, player2, initialServer, matchVisibility);
+        UUID clubUuid = parseClubId(clubId);
+        CreateMatchResponse responseDto = matchService.createMatch(player1, player2, initialServer, matchVisibility, clubUuid);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -56,7 +58,8 @@ public class MatchController {
             @RequestParam String player1Username,
             @RequestParam String player2Username,
             @RequestParam String initialServer,
-            @RequestParam int visibility
+            @RequestParam int visibility,
+            @RequestParam(required = false) String clubId
     ) {
         MatchVisibility matchVisibility;
         switch (visibility) {
@@ -65,14 +68,30 @@ public class MatchController {
             default -> matchVisibility = MatchVisibility.PRIVATE;
         }
 
+        UUID clubUuid = parseClubId(clubId);
         CreateMatchResponse responseDto = matchService.createMatchAsReferee(
                 userDetails.getUsername(),
                 player1Username,
                 player2Username,
                 initialServer,
-                matchVisibility
+                matchVisibility,
+                clubUuid
         );
         return ResponseEntity.ok(responseDto);
+    }
+
+    private UUID parseClubId(String clubId) {
+        if (clubId == null || clubId.isBlank()) {
+            return null;
+        }
+        try {
+            return UUID.fromString(clubId);
+        } catch (IllegalArgumentException e) {
+            throw new com.match_intel.backend.exception.ClientErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid club id"
+            );
+        }
     }
 
     @GetMapping("/{matchId}")

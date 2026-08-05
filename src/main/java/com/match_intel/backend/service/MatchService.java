@@ -31,9 +31,17 @@ public class MatchService {
     private LikeRepository likeRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private ClubRepository clubRepository;
 
 
-    public CreateMatchResponse createMatch(String username1, String username2, String initialServer, MatchVisibility visibility) {
+    public CreateMatchResponse createMatch(
+            String username1,
+            String username2,
+            String initialServer,
+            MatchVisibility visibility,
+            UUID clubId
+    ) {
         User player1 = userRepository.findByUsername(username1)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Player1 not found"));
         User player2 = userRepository.findByUsername(username2)
@@ -54,6 +62,11 @@ public class MatchService {
         match.setStartDate(dateTimeStarted.format(DateTimeFormatter.ofPattern("dd.MM.yyyy.")));
         match.setStartTime(dateTimeStarted.format(DateTimeFormatter.ofPattern("HH:mm")));
         match.setVisibility(visibility);
+        if (clubId != null) {
+            Club club = clubRepository.findById(clubId)
+                    .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Club not found"));
+            match.setClub(club);
+        }
         matchRepository.save(match);
 
         CreateMatchResponse responseDto = new CreateMatchResponse();
@@ -67,7 +80,8 @@ public class MatchService {
             String player1Username,
             String player2Username,
             String initialServer,
-            MatchVisibility visibility
+            MatchVisibility visibility,
+            UUID clubId
     ) {
         User referee = userRepository.findByUsername(refereeUsername)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Referee not found"));
@@ -100,6 +114,11 @@ public class MatchService {
         match.setStartDate(dateTimeStarted.format(DateTimeFormatter.ofPattern("dd.MM.yyyy.")));
         match.setStartTime(dateTimeStarted.format(DateTimeFormatter.ofPattern("HH:mm")));
         match.setVisibility(visibility);
+        if (clubId != null) {
+            Club club = clubRepository.findById(clubId)
+                    .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Club not found"));
+            match.setClub(club);
+        }
         matchRepository.save(match);
 
         CreateMatchResponse responseDto = new CreateMatchResponse();
