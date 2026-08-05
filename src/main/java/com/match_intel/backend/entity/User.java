@@ -37,6 +37,11 @@ public class User implements UserDetails {
     @Column
     private String profileImage;
 
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @Column(name = "profile_visibility", nullable = false)
+    private ProfileVisibility profileVisibility = ProfileVisibility.PUBLIC;
+
 
     public User() {}
 

@@ -3,6 +3,7 @@ package com.match_intel.backend.service;
 import com.match_intel.backend.dto.request.RegisterUserRequest;
 import com.match_intel.backend.dto.response.UserDto;
 import com.match_intel.backend.entity.FollowRequestStatus;
+import com.match_intel.backend.entity.ProfileVisibility;
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.exception.GeneralUnhandledException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -29,6 +31,8 @@ public class UserService {
     private FollowRequestRepository followRequestRepository;
     @Autowired
     private MatchRepository matchRepository;
+    @Autowired
+    private FollowService followService;
 
 
     public Optional<User> getUserById(UUID id) {
@@ -89,12 +93,21 @@ public class UserService {
 
     public List<User> searchUsers(String query) {
         if (query.isBlank()) {
-            throw new ClientErrorException(
-                    HttpStatus.BAD_REQUEST,
-                    "Please provide a search query."
-            );
+            return userRepository.findTop50ByOrderByUsernameAsc();
         }
-        return userRepository.searchByNameOrUsername(query);
+        String normalizedQuery = normalize(query);
+        return userRepository.findAll().stream()
+                .filter(user -> normalize(user.getFirstName()).contains(normalizedQuery)
+                        || normalize(user.getLastName()).contains(normalizedQuery)
+                        || normalize(user.getUsername()).contains(normalizedQuery))
+                .limit(50)
+                .toList();
+    }
+
+    private String normalize(String value) {
+        return java.text.Normalizer.normalize(value, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT);
     }
 
     public UserDto getUserByUsername(
@@ -112,10 +125,32 @@ public class UserService {
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setUsername(user.getUsername());
+        userDto.setProfileVisibility(user.getProfileVisibility().name());
+
+        boolean isOwnProfile = currentUsername.equals(username);
+        boolean restricted = false;
+
+        if (!isOwnProfile) {
+            switch (user.getProfileVisibility()) {
+                case PUBLIC -> { }
+                case FOLLOWERS -> {
+                    restricted = !followService.isFollowing(currentUsername, username);
+                }
+                case PRIVATE -> restricted = true;
+            }
+        }
+
+        userDto.setProfileRestricted(restricted);
+        if (restricted) {
+            return userDto;
+        }
+
         userDto.setFollowing(followRequestRepository.findByFollowerAndStatus(user, FollowRequestStatus.ACCEPTED).size());
         userDto.setFollowers(followRequestRepository.findByFolloweeAndStatus(user, FollowRequestStatus.ACCEPTED).size());
+        userDto.setDoesFollow(followRequestRepository.existsByFollowerAndFolloweeAndStatus(currentUser, user, FollowRequestStatus.ACCEPTED));
+        userDto.setFollowRequestSent(followRequestRepository.existsByFollowerAndFolloweeAndStatus(currentUser, user, FollowRequestStatus.PENDING));
 
-        if (currentUsername.equals(username)) {
+        if (isOwnProfile) {
             userDto.setMatches(matchRepository.findByPlayer1OrPlayer2(user, user));
         }
         else {
@@ -123,5 +158,12 @@ public class UserService {
         }
 
         return userDto;
+    }
+
+    public void updateProfileVisibility(String username, ProfileVisibility visibility) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setProfileVisibility(visibility);
+        userRepository.save(user);
     }
 }

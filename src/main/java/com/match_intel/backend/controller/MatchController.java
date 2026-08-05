@@ -47,6 +47,34 @@ public class MatchController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @Operation(summary = "Creating new tennis match as referee")
+    @PostMapping("/create_as_referee")
+    @ApiResponse(responseCode = "201",
+            description = "New match created successfully")
+    public ResponseEntity<CreateMatchResponse> createMatchAsReferee(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam String player1Username,
+            @RequestParam String player2Username,
+            @RequestParam String initialServer,
+            @RequestParam int visibility
+    ) {
+        MatchVisibility matchVisibility;
+        switch (visibility) {
+            case 2 -> matchVisibility = MatchVisibility.PUBLIC;
+            case 1 -> matchVisibility = MatchVisibility.FOLLOWERS;
+            default -> matchVisibility = MatchVisibility.PRIVATE;
+        }
+
+        CreateMatchResponse responseDto = matchService.createMatchAsReferee(
+                userDetails.getUsername(),
+                player1Username,
+                player2Username,
+                initialServer,
+                matchVisibility
+        );
+        return ResponseEntity.ok(responseDto);
+    }
+
     @GetMapping("/{matchId}")
     public ResponseEntity<Match> getMatchById(
             @PathVariable String matchId
@@ -61,12 +89,20 @@ public class MatchController {
     @ApiResponse(responseCode = "201",
             description = "Point added successfully")
     public ResponseEntity<Point> addPoint(
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam String matchId,
             @RequestParam String scoringPlayerUsername,
-            @RequestParam Boolean forced
+            @RequestParam Boolean forced,
+            @RequestParam(required = false) String isFirstServe
     ) {
         UUID matchUUID = UUID.fromString(matchId);
-        Point point = matchService.addPoint(matchUUID, scoringPlayerUsername, forced);
+        Point point = matchService.addPoint(
+                matchUUID,
+                scoringPlayerUsername,
+                forced,
+                userDetails.getUsername(),
+                isFirstServe
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(point);
     }
 

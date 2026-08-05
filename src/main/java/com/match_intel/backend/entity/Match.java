@@ -25,6 +25,11 @@ public class Match {
     @Setter
     private User player2;
 
+    @ManyToOne
+    @JoinColumn(name = "referee_id", referencedColumnName = "id")
+    @Setter
+    private User referee;
+
     @Column(nullable = false)
     @Setter
     private String initialServer;

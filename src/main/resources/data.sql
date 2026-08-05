@@ -1,8 +1,8 @@
-INSERT INTO users(id, username, first_name, last_name, email, password, enabled)
+INSERT INTO users(id, username, first_name, last_name, email, password, enabled, profile_visibility)
     VALUES
-        ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ivan01', 'Ivan', 'Ivić', 'blaskovic.ivan1@gmail.com', '$2a$10$/o9PxTASyyvPxy5/6etBeeExHZYBUzkm/7ROcGurq0Z30wyadcAM.', 1),
-        ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', 'mmarkic', 'Marko', 'Markić', 'blaskovic.ivan1+1@gmail.com', '$2a$10$/o9PxTASyyvPxy5/6etBeeExHZYBUzkm/7ROcGurq0Z30wyadcAM.', 1),
-        ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13', 'pere', 'Pero', 'Perić', 'blaskovic.ivan1+2@gmail.com', '$2a$10$/o9PxTASyyvPxy5/6etBeeExHZYBUzkm/7ROcGurq0Z30wyadcAM.', 1);
+        ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ivan01', 'Ivan', 'Ivić', 'blaskovic.ivan1@gmail.com', '$2a$10$/o9PxTASyyvPxy5/6etBeeExHZYBUzkm/7ROcGurq0Z30wyadcAM.', 1, 'PUBLIC'),
+        ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', 'mmarkic', 'Marko', 'Markić', 'blaskovic.ivan1+1@gmail.com', '$2a$10$/o9PxTASyyvPxy5/6etBeeExHZYBUzkm/7ROcGurq0Z30wyadcAM.', 1, 'PUBLIC'),
+        ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13', 'pere', 'Pero', 'Perić', 'blaskovic.ivan1+2@gmail.com', '$2a$10$/o9PxTASyyvPxy5/6etBeeExHZYBUzkm/7ROcGurq0Z30wyadcAM.', 1, 'PUBLIC');
 
 INSERT INTO matches(id, player1_id, player2_id, initial_server, visibility, start_date, start_time, is_finished, final_score, player1efficiency, player2efficiency, number_of_likes, number_of_comments)
     VALUES

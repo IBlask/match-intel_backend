@@ -77,4 +77,20 @@ public class FollowService {
                 .map(req -> req.getStatus() == FollowRequestStatus.ACCEPTED)
                 .orElse(false);
     }
+
+    public void removeFollower(String followeeUsername, String username) {
+        User followee = userRepository.findByUsername(followeeUsername)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Followee not found"));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "User not found"));
+
+        FollowRequest request = followRequestRepository.findByFollowerAndFollowee(user, followee)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Follow relationship not found"));
+
+        if (request.getStatus() != FollowRequestStatus.ACCEPTED) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "User is not a follower.");
+        }
+
+        followRequestRepository.delete(request);
+    }
 }

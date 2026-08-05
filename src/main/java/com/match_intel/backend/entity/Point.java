@@ -52,6 +52,14 @@ public class Point {
     @Column(nullable = false)
     private boolean forced;
 
+    @Column(name = "is_first_serve")
+    private Boolean isFirstServe;
+
+
+    public void setIsFirstServe(Boolean isFirstServe) {
+        this.isFirstServe = isFirstServe;
+    }
+
 
     public Point(UUID matchId, int scoringPlayerNumber, int playerToServe, boolean forced, String playerWhoScored) {
         this.matchId = matchId;

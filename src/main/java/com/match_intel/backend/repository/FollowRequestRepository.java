@@ -18,5 +18,5 @@ public interface FollowRequestRepository extends JpaRepository<FollowRequest, UU
     Optional<FollowRequest> findByFollowerAndFollowee(User follower, User followee);
     List<FollowRequest> findByFollowerAndStatus(User follower, FollowRequestStatus status);
     List<FollowRequest> findByFolloweeAndFollowerAndStatus(User followee, User follower, FollowRequestStatus status);
-
+    boolean existsByFollowerAndFolloweeAndStatus(User follower, User followee, FollowRequestStatus status);
 }

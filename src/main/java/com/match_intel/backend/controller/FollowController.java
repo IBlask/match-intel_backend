@@ -18,18 +18,27 @@ public class FollowController {
     @PostMapping("/request")
     public ResponseEntity<?> sendFollowRequest(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam String toUsername
+            @RequestParam String username
     ) {
-        followService.sendFollowRequest(userDetails.getUsername(), toUsername);
+        followService.sendFollowRequest(userDetails.getUsername(), username);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/accept")
     public ResponseEntity<?> acceptFollowRequest(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam String fromUsername
+            @RequestParam String username
     ) {
-        followService.acceptFollowRequest(fromUsername, userDetails.getUsername());
+        followService.acceptFollowRequest(username, userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/remove")
+    public ResponseEntity<?> removeFollower(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam String username
+    ) {
+        followService.removeFollower(username, userDetails.getUsername());
         return ResponseEntity.ok().build();
     }
 }

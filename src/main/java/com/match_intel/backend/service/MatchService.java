@@ -62,12 +62,73 @@ public class MatchService {
         return responseDto;
     }
 
-    public Point addPoint(UUID matchId, String scoringPlayerUsername, Boolean forced) {
+    public CreateMatchResponse createMatchAsReferee(
+            String refereeUsername,
+            String player1Username,
+            String player2Username,
+            String initialServer,
+            MatchVisibility visibility
+    ) {
+        User referee = userRepository.findByUsername(refereeUsername)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Referee not found"));
+        User player1 = userRepository.findByUsername(player1Username)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Player1 not found"));
+        User player2 = userRepository.findByUsername(player2Username)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Player2 not found"));
+
+        if (player1.getUsername().equals(player2.getUsername())) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Players must be different");
+        }
+        if (player1.getUsername().equals(referee.getUsername())
+                || player2.getUsername().equals(referee.getUsername())) {
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Referee cannot be one of the players");
+        }
+        if (!initialServer.equals(player1.getUsername()) && !initialServer.equals(player2.getUsername())) {
+            throw new ClientErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid initial server. Initial server must be one of the players!"
+            );
+        }
+
+        LocalDateTime dateTimeStarted = LocalDateTime.now();
+
+        Match match = new Match();
+        match.setPlayer1(player1);
+        match.setPlayer2(player2);
+        match.setReferee(referee);
+        match.setInitialServer(initialServer);
+        match.setStartDate(dateTimeStarted.format(DateTimeFormatter.ofPattern("dd.MM.yyyy.")));
+        match.setStartTime(dateTimeStarted.format(DateTimeFormatter.ofPattern("HH:mm")));
+        match.setVisibility(visibility);
+        matchRepository.save(match);
+
+        CreateMatchResponse responseDto = new CreateMatchResponse();
+        responseDto.setMatchId(match.getId().toString());
+        responseDto.setStartTime(match.getStartTime().toString());
+        return responseDto;
+    }
+
+    public Point addPoint(
+            UUID matchId,
+            String scoringPlayerUsername,
+            Boolean forced,
+            String currentUsername,
+            String isFirstServe
+    ) {
         if (scoringPlayerUsername == null) {
             throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Please provide scoring player username.");
         }
         if (forced == null) {
             throw new ClientErrorException(HttpStatus.BAD_REQUEST, "Please provide whether the point is forced or not.");
+        }
+
+        Boolean firstServeFlag = null;
+        if (isFirstServe != null) {
+            firstServeFlag = switch (isFirstServe.toUpperCase()) {
+                case "FIRST" -> Boolean.TRUE;
+                case "SECOND" -> Boolean.FALSE;
+                default -> null;
+            };
         }
 
         Point newPoint;
@@ -82,6 +143,16 @@ public class MatchService {
             throw new ClientErrorException(
                     HttpStatus.BAD_REQUEST,
                     "The match is already finished. You can't add points to this match."
+            );
+        }
+
+        boolean isPlayer1 = match.getPlayer1().getUsername().equals(currentUsername);
+        boolean isPlayer2 = match.getPlayer2().getUsername().equals(currentUsername);
+        boolean isReferee = match.getReferee() != null && match.getReferee().getUsername().equals(currentUsername);
+        if (!isPlayer1 && !isPlayer2 && !isReferee) {
+            throw new ClientErrorException(
+                    HttpStatus.FORBIDDEN,
+                    "Only players or the referee can score points"
             );
         }
 
@@ -102,6 +173,7 @@ public class MatchService {
             Point parentPoint = parentPointOpt.get();
 
             newPoint = new Point(parentPoint, scoringPlayerNumber, forced, scoringPlayerUsername);
+            newPoint.setIsFirstServe(firstServeFlag);
             pointRepository.save(newPoint);
 
             // Update sets scores
@@ -181,8 +253,9 @@ public class MatchService {
         }
         // if this is the first point
         else {
-            int playerToServeNumber = match.getInitialServer().equals(match.getPlayer1().getUsername()) ? 2 : 1;
+            int playerToServeNumber = match.getInitialServer().equals(match.getPlayer1().getUsername()) ? 1 : 2;
             newPoint = new Point(match.getId(), scoringPlayerNumber, playerToServeNumber, forced, scoringPlayerUsername);
+            newPoint.setIsFirstServe(firstServeFlag);
             pointRepository.save(newPoint);
         }
 
@@ -291,8 +364,162 @@ public class MatchService {
         matchStats.setPlayer1Set3Efficiency(totalSet3EfficiencyPoints == 0 ? 0 : (player1Set3EfficiencyPoints * 100) / totalSet3EfficiencyPoints);
         matchStats.setPlayer2Set3Efficiency(totalSet3EfficiencyPoints == 0 ? 0 : 100 - matchStats.getPlayer1Set3Efficiency());
 
+        applyServeStats(matchStats, allPoints, match);
+
         match.setMatchStats(matchStats);
         return match;
+    }
+
+    private void applyServeStats(MatchStats matchStats, List<Point> allPoints, Match match) {
+        int[][] firstAttempted = new int[2][3];
+        int[][] firstMade = new int[2][3];
+        int[][] secondAttempted = new int[2][3];
+        int[][] secondMade = new int[2][3];
+
+        for (Point point : allPoints) {
+            Boolean isFirstServe = point.getIsFirstServe();
+            if (isFirstServe == null) {
+                continue;
+            }
+
+            int serverIndex = point.getPlayerToServe() == 1 ? 0 : 1;
+            int setIndex = point.getPlayer1Sets() + point.getPlayer2Sets();
+            if (point.getPlayer1Games()
+                    + point.getPlayer2Games()
+                    + Integer.parseInt(point.getPlayer1Points())
+                    + Integer.parseInt(point.getPlayer2Points()) == 0) {
+                setIndex -= 1;
+            }
+            if (setIndex < 0 || setIndex > 2) {
+                continue;
+            }
+
+            String serverUsername = serverIndex == 0
+                    ? match.getPlayer1().getUsername()
+                    : match.getPlayer2().getUsername();
+            boolean serveMade = serverUsername.equals(point.getPlayerWhoScored());
+
+            if (isFirstServe) {
+                firstAttempted[serverIndex][setIndex]++;
+                if (serveMade) {
+                    firstMade[serverIndex][setIndex]++;
+                }
+            }
+            else {
+                secondAttempted[serverIndex][setIndex]++;
+                if (serveMade) {
+                    secondMade[serverIndex][setIndex]++;
+                }
+            }
+        }
+
+        fillServeStats(matchStats, 1, firstAttempted[0], firstMade[0], secondAttempted[0], secondMade[0]);
+        fillServeStats(matchStats, 2, firstAttempted[1], firstMade[1], secondAttempted[1], secondMade[1]);
+    }
+
+    private void fillServeStats(
+            MatchStats matchStats,
+            int player,
+            int[] firstAttempted,
+            int[] firstMade,
+            int[] secondAttempted,
+            int[] secondMade
+    ) {
+        int overallFirstAttempted = 0;
+        int overallFirstMade = 0;
+        int overallSecondAttempted = 0;
+        int overallSecondMade = 0;
+
+        for (int set = 0; set < 3; set++) {
+            overallFirstAttempted += firstAttempted[set];
+            overallFirstMade += firstMade[set];
+            overallSecondAttempted += secondAttempted[set];
+            overallSecondMade += secondMade[set];
+
+            Double firstPercentage = servePercentage(firstAttempted[set], firstMade[set]);
+            Double secondPercentage = servePercentage(secondAttempted[set], secondMade[set]);
+
+            if (player == 1) {
+                switch (set) {
+                    case 0 -> {
+                        matchStats.setPlayer1Set1FirstServesAttempted(firstAttempted[0]);
+                        matchStats.setPlayer1Set1FirstServesMade(firstMade[0]);
+                        matchStats.setPlayer1Set1FirstServePercentage(firstPercentage);
+                        matchStats.setPlayer1Set1SecondServesAttempted(secondAttempted[0]);
+                        matchStats.setPlayer1Set1SecondServesMade(secondMade[0]);
+                        matchStats.setPlayer1Set1SecondServePercentage(secondPercentage);
+                    }
+                    case 1 -> {
+                        matchStats.setPlayer1Set2FirstServesAttempted(firstAttempted[1]);
+                        matchStats.setPlayer1Set2FirstServesMade(firstMade[1]);
+                        matchStats.setPlayer1Set2FirstServePercentage(firstPercentage);
+                        matchStats.setPlayer1Set2SecondServesAttempted(secondAttempted[1]);
+                        matchStats.setPlayer1Set2SecondServesMade(secondMade[1]);
+                        matchStats.setPlayer1Set2SecondServePercentage(secondPercentage);
+                    }
+                    default -> {
+                        matchStats.setPlayer1Set3FirstServesAttempted(firstAttempted[2]);
+                        matchStats.setPlayer1Set3FirstServesMade(firstMade[2]);
+                        matchStats.setPlayer1Set3FirstServePercentage(firstPercentage);
+                        matchStats.setPlayer1Set3SecondServesAttempted(secondAttempted[2]);
+                        matchStats.setPlayer1Set3SecondServesMade(secondMade[2]);
+                        matchStats.setPlayer1Set3SecondServePercentage(secondPercentage);
+                    }
+                }
+            }
+            else {
+                switch (set) {
+                    case 0 -> {
+                        matchStats.setPlayer2Set1FirstServesAttempted(firstAttempted[0]);
+                        matchStats.setPlayer2Set1FirstServesMade(firstMade[0]);
+                        matchStats.setPlayer2Set1FirstServePercentage(firstPercentage);
+                        matchStats.setPlayer2Set1SecondServesAttempted(secondAttempted[0]);
+                        matchStats.setPlayer2Set1SecondServesMade(secondMade[0]);
+                        matchStats.setPlayer2Set1SecondServePercentage(secondPercentage);
+                    }
+                    case 1 -> {
+                        matchStats.setPlayer2Set2FirstServesAttempted(firstAttempted[1]);
+                        matchStats.setPlayer2Set2FirstServesMade(firstMade[1]);
+                        matchStats.setPlayer2Set2FirstServePercentage(firstPercentage);
+                        matchStats.setPlayer2Set2SecondServesAttempted(secondAttempted[1]);
+                        matchStats.setPlayer2Set2SecondServesMade(secondMade[1]);
+                        matchStats.setPlayer2Set2SecondServePercentage(secondPercentage);
+                    }
+                    default -> {
+                        matchStats.setPlayer2Set3FirstServesAttempted(firstAttempted[2]);
+                        matchStats.setPlayer2Set3FirstServesMade(firstMade[2]);
+                        matchStats.setPlayer2Set3FirstServePercentage(firstPercentage);
+                        matchStats.setPlayer2Set3SecondServesAttempted(secondAttempted[2]);
+                        matchStats.setPlayer2Set3SecondServesMade(secondMade[2]);
+                        matchStats.setPlayer2Set3SecondServePercentage(secondPercentage);
+                    }
+                }
+            }
+        }
+
+        if (player == 1) {
+            matchStats.setPlayer1FirstServesAttempted(overallFirstAttempted == 0 ? null : overallFirstAttempted);
+            matchStats.setPlayer1FirstServesMade(overallFirstMade);
+            matchStats.setPlayer1FirstServePercentage(servePercentage(overallFirstAttempted, overallFirstMade));
+            matchStats.setPlayer1SecondServesAttempted(overallSecondAttempted == 0 ? null : overallSecondAttempted);
+            matchStats.setPlayer1SecondServesMade(overallSecondMade);
+            matchStats.setPlayer1SecondServePercentage(servePercentage(overallSecondAttempted, overallSecondMade));
+        }
+        else {
+            matchStats.setPlayer2FirstServesAttempted(overallFirstAttempted == 0 ? null : overallFirstAttempted);
+            matchStats.setPlayer2FirstServesMade(overallFirstMade);
+            matchStats.setPlayer2FirstServePercentage(servePercentage(overallFirstAttempted, overallFirstMade));
+            matchStats.setPlayer2SecondServesAttempted(overallSecondAttempted == 0 ? null : overallSecondAttempted);
+            matchStats.setPlayer2SecondServesMade(overallSecondMade);
+            matchStats.setPlayer2SecondServePercentage(servePercentage(overallSecondAttempted, overallSecondMade));
+        }
+    }
+
+    private Double servePercentage(int attempted, int made) {
+        if (attempted == 0) {
+            return null;
+        }
+        return (made * 100.0) / attempted;
     }
 
     public boolean likeMatch(String username, UUID matchId) {

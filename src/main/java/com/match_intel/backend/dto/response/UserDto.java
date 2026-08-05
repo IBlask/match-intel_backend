@@ -15,7 +15,11 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String username;
+    private String profileVisibility;
+    private boolean profileRestricted;
     private int following;
     private int followers;
     private List<Match> matches;
+    private boolean doesFollow;
+    private boolean isFollowRequestSent;
 }
