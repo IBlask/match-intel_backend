@@ -37,6 +37,8 @@ class MatchServiceUnitTests {
     private LikeRepository likeRepository;
     @Mock
     private CommentRepository commentRepository;
+    @Mock
+    private ClubRepository clubRepository;
     @InjectMocks
     private MatchService matchService;
 
@@ -75,7 +77,7 @@ class MatchServiceUnitTests {
         });
 
         CreateMatchResponse response = matchService.createMatchAsReferee(
-                "ref1", "p1", "p2", "p1", MatchVisibility.PUBLIC
+                "ref1", "p1", "p2", "p1", MatchVisibility.PUBLIC, null
         );
 
         assertNotNull(response);
@@ -96,7 +98,7 @@ class MatchServiceUnitTests {
         when(userRepository.findByUsername("p2")).thenReturn(Optional.of(player2));
 
         ClientErrorException exception = assertThrows(ClientErrorException.class, () ->
-                matchService.createMatchAsReferee("p1", "p1", "p2", "p1", MatchVisibility.PUBLIC));
+                matchService.createMatchAsReferee("p1", "p1", "p2", "p1", MatchVisibility.PUBLIC, null));
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), exception.getStatusCode());
         verify(matchRepository, never()).save(any(Match.class));
@@ -109,7 +111,7 @@ class MatchServiceUnitTests {
         when(userRepository.findByUsername("p1")).thenReturn(Optional.of(player1));
 
         ClientErrorException exception = assertThrows(ClientErrorException.class, () ->
-                matchService.createMatchAsReferee("ref1", "p1", "p1", "p1", MatchVisibility.PUBLIC));
+                matchService.createMatchAsReferee("ref1", "p1", "p1", "p1", MatchVisibility.PUBLIC, null));
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), exception.getStatusCode());
         verify(matchRepository, never()).save(any(Match.class));
@@ -157,6 +159,96 @@ class MatchServiceUnitTests {
 
         assertEquals(HttpStatus.FORBIDDEN.value(), exception.getStatusCode());
         verify(pointRepository, never()).save(any(Point.class));
+    }
+
+    @Test
+    @DisplayName("createMatch - with valid clubId sets club on match")
+    void createMatch_shouldSetClubWhenClubIdProvided() {
+        when(userRepository.findByUsername("p1")).thenReturn(Optional.of(player1));
+        when(userRepository.findByUsername("p2")).thenReturn(Optional.of(player2));
+        UUID clubId = UUID.randomUUID();
+        Club club = new Club();
+        club.setId(clubId);
+        club.setName("Test Club");
+        when(clubRepository.findById(clubId)).thenReturn(Optional.of(club));
+        when(matchRepository.save(any(Match.class))).thenAnswer(invocation -> {
+            Match saved = invocation.getArgument(0);
+            if (saved.getId() == null) {
+                ReflectionTestUtils.setField(saved, "id", UUID.randomUUID());
+            }
+            return saved;
+        });
+
+        CreateMatchResponse response = matchService.createMatch(
+                "p1", "p2", "p1", MatchVisibility.PUBLIC, clubId
+        );
+
+        assertNotNull(response);
+        verify(matchRepository).save(argThat(saved ->
+                saved.getClub() != null && saved.getClub().getId().equals(clubId)
+        ));
+    }
+
+    @Test
+    @DisplayName("createMatch - with unknown clubId throws 400")
+    void createMatch_shouldRejectUnknownClub() {
+        when(userRepository.findByUsername("p1")).thenReturn(Optional.of(player1));
+        when(userRepository.findByUsername("p2")).thenReturn(Optional.of(player2));
+        UUID clubId = UUID.randomUUID();
+        when(clubRepository.findById(clubId)).thenReturn(Optional.empty());
+
+        ClientErrorException exception = assertThrows(ClientErrorException.class, () ->
+                matchService.createMatch("p1", "p2", "p1", MatchVisibility.PUBLIC, clubId));
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), exception.getStatusCode());
+        verify(matchRepository, never()).save(any(Match.class));
+    }
+
+    @Test
+    @DisplayName("createMatchAsReferee - with valid clubId sets club on match")
+    void createMatchAsReferee_shouldSetClubWhenClubIdProvided() {
+        when(userRepository.findByUsername("ref1")).thenReturn(Optional.of(referee));
+        when(userRepository.findByUsername("p1")).thenReturn(Optional.of(player1));
+        when(userRepository.findByUsername("p2")).thenReturn(Optional.of(player2));
+        UUID clubId = UUID.randomUUID();
+        Club club = new Club();
+        club.setId(clubId);
+        club.setName("Test Club");
+        when(clubRepository.findById(clubId)).thenReturn(Optional.of(club));
+        when(matchRepository.save(any(Match.class))).thenAnswer(invocation -> {
+            Match saved = invocation.getArgument(0);
+            if (saved.getId() == null) {
+                ReflectionTestUtils.setField(saved, "id", UUID.randomUUID());
+            }
+            return saved;
+        });
+
+        CreateMatchResponse response = matchService.createMatchAsReferee(
+                "ref1", "p1", "p2", "p1", MatchVisibility.PUBLIC, clubId
+        );
+
+        assertNotNull(response);
+        verify(matchRepository).save(argThat(saved ->
+                saved.getClub() != null && saved.getClub().getId().equals(clubId)
+        ));
+    }
+
+    @Test
+    @DisplayName("createMatchAsReferee - with unknown clubId throws 400")
+    void createMatchAsReferee_shouldRejectUnknownClub() {
+        when(userRepository.findByUsername("ref1")).thenReturn(Optional.of(referee));
+        when(userRepository.findByUsername("p1")).thenReturn(Optional.of(player1));
+        when(userRepository.findByUsername("p2")).thenReturn(Optional.of(player2));
+        UUID clubId = UUID.randomUUID();
+        when(clubRepository.findById(clubId)).thenReturn(Optional.empty());
+
+        ClientErrorException exception = assertThrows(ClientErrorException.class, () ->
+                matchService.createMatchAsReferee(
+                        "ref1", "p1", "p2", "p1", MatchVisibility.PUBLIC, clubId
+                ));
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), exception.getStatusCode());
+        verify(matchRepository, never()).save(any(Match.class));
     }
 
     @Test
