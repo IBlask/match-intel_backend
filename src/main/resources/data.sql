@@ -22,7 +22,10 @@ INSERT INTO clubs(id, name, address, email, phone, description, logo_url, latitu
          NULL, 45.7950, 15.9680, 'INSTANT', 4.5, 1, '2026-08-05 10:00:00'),
         ('b1f0ecc0-0000-4000-8000-000000000002', 'Elite Tennis Club', 'Ulica grada Vukovara 100, Zagreb',
          'contact@elitetennis.hr', '+385 1 555 0200', 'Clay and grass courts, pro shop on site.',
-         NULL, 45.8000, 15.9900, 'APPROVAL', NULL, 0, '2026-08-05 10:05:00');
+         NULL, 45.8000, 15.9900, 'APPROVAL', NULL, 0, '2026-08-05 10:05:00'),
+        ('b1f0ecc0-0000-4000-8000-000000000003', 'Sunset Tennis Park', 'Obala kralja Tomislava 12, Split',
+         'info@sunsettennis.hr', '+385 21 555 0300', 'Open-air courts with a sea view.',
+         NULL, 43.5081, 16.4402, 'INSTANT', NULL, 0, '2026-08-05 10:10:00');
 
 INSERT INTO club_members(id, club_id, user_id, role, joined_at)
     VALUES
@@ -31,13 +34,16 @@ INSERT INTO club_members(id, club_id, user_id, role, joined_at)
         ('c1f0ecc0-0000-4000-8000-000000000002', 'b1f0ecc0-0000-4000-8000-000000000001',
          'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', 'ADMIN', '2026-08-05 10:01:00'),
         ('c1f0ecc0-0000-4000-8000-000000000003', 'b1f0ecc0-0000-4000-8000-000000000002',
-         'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', 'OWNER', '2026-08-05 10:05:00');
+         'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', 'OWNER', '2026-08-05 10:05:00'),
+        ('c1f0ecc0-0000-4000-8000-000000000004', 'b1f0ecc0-0000-4000-8000-000000000003',
+         'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'OWNER', '2026-08-05 10:10:00');
 
 INSERT INTO club_courts(id, club_id, name, surface_type, price_per_hour)
     VALUES
         ('d1f0ecc0-0000-4000-8000-000000000001', 'b1f0ecc0-0000-4000-8000-000000000001', 'Court 1', 'HARD', 12.00),
         ('d1f0ecc0-0000-4000-8000-000000000002', 'b1f0ecc0-0000-4000-8000-000000000001', 'Court 2', 'HARD', 12.00),
-        ('d1f0ecc0-0000-4000-8000-000000000003', 'b1f0ecc0-0000-4000-8000-000000000002', 'Clay A', 'CLAY', 15.00);
+        ('d1f0ecc0-0000-4000-8000-000000000003', 'b1f0ecc0-0000-4000-8000-000000000002', 'Clay A', 'CLAY', 15.00),
+        ('d1f0ecc0-0000-4000-8000-000000000004', 'b1f0ecc0-0000-4000-8000-000000000003', 'Seaside Court', 'GRASS', 18.00);
 
 INSERT INTO club_reviews(id, club_id, user_id, rating, comment, created_at)
     VALUES
