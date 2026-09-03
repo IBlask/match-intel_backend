@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/matches")
@@ -95,11 +96,11 @@ public class MatchController {
     }
 
     @GetMapping("/{matchId}")
-    public ResponseEntity<Match> getMatchById(
+    public ResponseEntity<com.match_intel.backend.dto.response.MatchSummaryDto> getMatchById(
             @PathVariable String matchId
     ) {
         UUID matchUUID = UUID.fromString(matchId);
-        Match match = matchService.getMatch(matchUUID);
+        com.match_intel.backend.dto.response.MatchSummaryDto match = matchService.getMatchSummaryDto(matchUUID, null);
         return ResponseEntity.ok(match);
     }
 
@@ -131,16 +132,16 @@ public class MatchController {
             @PathVariable String username
     ) {
         String currentUsername = userDetails.getUsername();
-        List<Match> visibleMatches = matchService.getVisibleMatches(currentUsername, username);
+        List<com.match_intel.backend.dto.response.MatchSummaryDto> visibleMatches = matchService.getVisibleMatches(currentUsername, username);
         return ResponseEntity.ok(visibleMatches);
     }
 
     @GetMapping("/followed")
-    public ResponseEntity<List<Match>> getFollowedVisibleMatches(
+    public ResponseEntity<List<com.match_intel.backend.dto.response.MatchSummaryDto>> getFollowedVisibleMatches(
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String username = userDetails.getUsername();
-        List<Match> matches = matchService.getVisibleMatchesFromFollowedUsers(username);
+        List<com.match_intel.backend.dto.response.MatchSummaryDto> matches = matchService.getVisibleMatchesFromFollowedUsers(username);
         return ResponseEntity.ok(matches);
     }
 
@@ -168,11 +169,17 @@ public class MatchController {
     }
 
     @GetMapping("/likes_list")
-    public ResponseEntity<List<User>> getLikesList(
+    public ResponseEntity<List<com.match_intel.backend.dto.response.PlayerInfoDto>> getLikesList(
             @RequestParam String matchId
     ) {
         UUID matchUUID = UUID.fromString(matchId);
-        List<User> likesList = matchService.getLikesList(matchUUID);
+        List<com.match_intel.backend.dto.response.PlayerInfoDto> likesList = matchService.getLikesList(matchUUID).stream()
+                .map(u -> new com.match_intel.backend.dto.response.PlayerInfoDto(
+                        u.getId() != null ? u.getId().toString() : null,
+                        u.getUsername(),
+                        u.getFirstName(),
+                        u.getLastName()
+                )).collect(Collectors.toList());
         return ResponseEntity.ok(likesList);
     }
 

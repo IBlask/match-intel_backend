@@ -1,6 +1,8 @@
 package com.match_intel.backend.service;
 
 import com.match_intel.backend.dto.response.CreateMatchResponse;
+import com.match_intel.backend.dto.response.MatchSummaryDto;
+import com.match_intel.backend.dto.response.PlayerInfoDto;
 import com.match_intel.backend.entity.*;
 import com.match_intel.backend.exception.ClientErrorException;
 import com.match_intel.backend.repository.*;
@@ -315,7 +317,7 @@ public class MatchService {
         match.setLivePlayer2Points(latestPoint.getPlayer2Points());
     }
 
-    public List<Match> getVisibleMatches(String requesterUsername, String targetUsername) {
+    public List<MatchSummaryDto> getVisibleMatches(String requesterUsername, String targetUsername) {
         User requester = userRepository.findByUsername(requesterUsername)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Requester not found"));
         User target = userRepository.findByUsername(targetUsername)
@@ -334,19 +336,83 @@ public class MatchService {
                 }
             }
             return false;
-        }).toList();
+        }).map(m -> toSummaryDto(m, requesterUsername)).toList();
     }
 
-    public List<Match> getVisibleMatchesFromFollowedUsers(String requesterUsername) {
+    public List<MatchSummaryDto> getVisibleMatchesFromFollowedUsers(String requesterUsername) {
         User requester = userRepository.findByUsername(requesterUsername)
-                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Requester not found"));    
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Requester not found"));
 
         List<Match> matches = matchRepository.findVisibleMatchesOfFollowees(requester.getId());
         matches.forEach(match -> {
             match.setLikedByUser(likeRepository.existsByUser_UsernameAndMatch_Id(requesterUsername, match.getId()));
         });
 
-        return matches;
+        return matches.stream().map(m -> toSummaryDto(m, requesterUsername)).toList();
+    }
+
+    private MatchSummaryDto toSummaryDto(Match m, String requesterUsername) {
+        MatchSummaryDto dto = new MatchSummaryDto();
+        dto.setId(m.getId());
+        dto.setInitialServer(m.getInitialServer());
+        dto.setStartDate(m.getStartDate());
+        dto.setStartTime(m.getStartTime());
+        dto.setFinalScore(m.getFinalScore());
+        dto.setVisibility(m.getVisibility() != null ? m.getVisibility().name() : null);
+        dto.setFinished(m.isFinished());
+        dto.setPlayer1Efficiency(m.getPlayer1Efficiency());
+        dto.setPlayer2Efficiency(m.getPlayer2Efficiency());
+        dto.setNumberOfLikes(m.getNumberOfLikes());
+        dto.setNumberOfComments(m.getNumberOfComments());
+        dto.setLikedByUser(m.isLikedByUser());
+        if (m.getPlayer1() != null) {
+            dto.setPlayer1(new PlayerInfoDto(
+                    m.getPlayer1().getId() != null ? m.getPlayer1().getId().toString() : null,
+                    m.getPlayer1().getUsername(),
+                    m.getPlayer1().getFirstName(),
+                    m.getPlayer1().getLastName()
+            ));
+        }
+        if (m.getPlayer2() != null) {
+            dto.setPlayer2(new PlayerInfoDto(
+                    m.getPlayer2().getId() != null ? m.getPlayer2().getId().toString() : null,
+                    m.getPlayer2().getUsername(),
+                    m.getPlayer2().getFirstName(),
+                    m.getPlayer2().getLastName()
+            ));
+        }
+        if (m.getReferee() != null) {
+            dto.setReferee(new PlayerInfoDto(
+                    m.getReferee().getId() != null ? m.getReferee().getId().toString() : null,
+                    m.getReferee().getUsername(),
+                    m.getReferee().getFirstName(),
+                    m.getReferee().getLastName()
+            ));
+        }
+        if (m.getClub() != null) {
+            dto.setClubName(m.getClub().getName());
+        }
+        if (m.getTournament() != null) {
+            dto.setTournamentId(m.getTournament().getId());
+            dto.setTournamentName(m.getTournament().getName());
+        }
+        dto.setRound(m.getRound());
+        dto.setBracketPosition(m.getBracketPosition());
+        dto.setIsBye(Boolean.TRUE.equals(m.isBye()));
+        dto.setLivePlayer1Games(m.getLivePlayer1Games());
+        dto.setLivePlayer2Games(m.getLivePlayer2Games());
+        dto.setLivePlayer1Points(m.getLivePlayer1Points());
+        dto.setLivePlayer2Points(m.getLivePlayer2Points());
+        return dto;
+    }
+
+    public MatchSummaryDto getMatchSummaryDto(UUID matchId, String requesterUsername) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "Match not found"));
+        if (requesterUsername != null) {
+            match.setLikedByUser(likeRepository.existsByUser_UsernameAndMatch_Id(requesterUsername, matchId));
+        }
+        return toSummaryDto(match, requesterUsername);
     }
 
     public Match getMatch(UUID matchId) {
