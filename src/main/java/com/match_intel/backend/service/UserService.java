@@ -1,8 +1,10 @@
 package com.match_intel.backend.service;
 
 import com.match_intel.backend.dto.request.RegisterUserRequest;
+import com.match_intel.backend.dto.response.MatchDto;
 import com.match_intel.backend.dto.response.UserDto;
 import com.match_intel.backend.entity.FollowRequestStatus;
+import com.match_intel.backend.entity.Match;
 import com.match_intel.backend.entity.ProfileVisibility;
 import com.match_intel.backend.entity.User;
 import com.match_intel.backend.exception.ClientErrorException;
@@ -15,9 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -151,13 +155,66 @@ public class UserService {
         userDto.setFollowRequestSent(followRequestRepository.existsByFollowerAndFolloweeAndStatus(currentUser, user, FollowRequestStatus.PENDING));
 
         if (isOwnProfile) {
-            userDto.setMatches(matchRepository.findByPlayer1OrPlayer2(user, user));
+            userDto.setMatches(toMatchDtos(matchRepository.findByPlayer1OrPlayer2(user, user)));
         }
         else {
-            userDto.setMatches(matchRepository.findVisibleMatchesOfFollowees(currentUser.getId()));
+            userDto.setMatches(toMatchDtos(matchRepository.findVisibleMatchesOfFollowees(currentUser.getId())));
         }
 
         return userDto;
+    }
+
+    private List<MatchDto> toMatchDtos(List<Match> matches) {
+        if (matches == null) return Collections.emptyList();
+        List<MatchDto> result = new ArrayList<>();
+        for (Match m : matches) {
+            result.add(toMatchDto(m));
+        }
+        return result;
+    }
+
+    private MatchDto toMatchDto(Match m) {
+        MatchDto dto = new MatchDto();
+        dto.setId(m.getId());
+        dto.setInitialServer(m.getInitialServer());
+        dto.setStartDate(m.getStartDate());
+        dto.setStartTime(m.getStartTime());
+        dto.setFinalScore(m.getFinalScore());
+        dto.setVisibility(m.getVisibility() != null ? m.getVisibility().name() : null);
+        dto.setFinished(m.isFinished());
+        dto.setPlayer1Efficiency(m.getPlayer1Efficiency());
+        dto.setPlayer2Efficiency(m.getPlayer2Efficiency());
+        dto.setNumberOfLikes(m.getNumberOfLikes());
+        dto.setNumberOfComments(m.getNumberOfComments());
+        if (m.getPlayer1() != null) {
+            dto.setPlayer1(new com.match_intel.backend.dto.response.PlayerInfoDto(
+                    m.getPlayer1().getId() != null ? m.getPlayer1().getId().toString() : null,
+                    m.getPlayer1().getUsername(),
+                    m.getPlayer1().getFirstName(),
+                    m.getPlayer1().getLastName()
+            ));
+        }
+        if (m.getPlayer2() != null) {
+            dto.setPlayer2(new com.match_intel.backend.dto.response.PlayerInfoDto(
+                    m.getPlayer2().getId() != null ? m.getPlayer2().getId().toString() : null,
+                    m.getPlayer2().getUsername(),
+                    m.getPlayer2().getFirstName(),
+                    m.getPlayer2().getLastName()
+            ));
+        }
+        if (m.getReferee() != null) {
+            dto.setReferee(new com.match_intel.backend.dto.response.PlayerInfoDto(
+                    m.getReferee().getId() != null ? m.getReferee().getId().toString() : null,
+                    m.getReferee().getUsername(),
+                    m.getReferee().getFirstName(),
+                    m.getReferee().getLastName()
+            ));
+        }
+        if (m.getClub() != null) {
+            dto.setClubName(m.getClub().getName());
+        }
+        dto.setLikedByUser(m.isLikedByUser());
+        return dto;
     }
 
     public void updateProfileVisibility(String username, ProfileVisibility visibility) {

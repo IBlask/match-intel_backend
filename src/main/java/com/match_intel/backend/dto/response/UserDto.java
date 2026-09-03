@@ -1,6 +1,5 @@
 package com.match_intel.backend.dto.response;
 
-import com.match_intel.backend.entity.Match;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +18,7 @@ public class UserDto {
     private boolean profileRestricted;
     private int following;
     private int followers;
-    private List<Match> matches;
+    private List<MatchDto> matches;
     private boolean doesFollow;
     private boolean isFollowRequestSent;
 }

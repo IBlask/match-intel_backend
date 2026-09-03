@@ -1,6 +1,7 @@
 
 package com.match_intel.backend.service;
 
+import com.match_intel.backend.dto.response.FollowRequestDto;
 import com.match_intel.backend.entity.FollowRequest;
 import com.match_intel.backend.entity.FollowRequestStatus;
 import com.match_intel.backend.entity.User;
@@ -11,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FollowService {
@@ -92,5 +96,28 @@ public class FollowService {
         }
 
         followRequestRepository.delete(request);
+    }
+
+    public List<FollowRequestDto> getIncomingPendingRequests(String followeeUsername) {
+        User followee = userRepository.findByUsername(followeeUsername)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "User not found"));
+        return followRequestRepository.findByFolloweeAndStatus(followee, FollowRequestStatus.PENDING).stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private FollowRequestDto toDto(FollowRequest req) {
+        FollowRequestDto dto = new FollowRequestDto();
+        dto.setId(req.getId());
+        dto.setStatus(req.getStatus() != null ? req.getStatus().name() : null);
+        dto.setTimestamp(req.getTimestamp() != null
+                ? req.getTimestamp().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                : null);
+        if (req.getFollower() != null) {
+            dto.setFollowerUsername(req.getFollower().getUsername());
+            dto.setFollowerFirstName(req.getFollower().getFirstName());
+            dto.setFollowerLastName(req.getFollower().getLastName());
+        }
+        return dto;
     }
 }

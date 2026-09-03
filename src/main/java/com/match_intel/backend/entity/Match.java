@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.UUID;
 
@@ -112,8 +113,12 @@ public class Match {
     private Integer bracketPosition;
 
     @Column(name = "is_bye")
+    @ColumnDefault("false")
     @Setter
-    private boolean isBye = false;
+    private Boolean isBye = false;
+
+    public Boolean isBye() { return isBye; }
+    public void setBye(Boolean isBye) { this.isBye = isBye; }
 
     @Column
     @Setter

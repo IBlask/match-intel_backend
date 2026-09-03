@@ -1,12 +1,15 @@
 
 package com.match_intel.backend.controller;
 
+import com.match_intel.backend.dto.response.FollowRequestDto;
 import com.match_intel.backend.service.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/follow")
@@ -40,5 +43,12 @@ public class FollowController {
     ) {
         followService.removeFollower(username, userDetails.getUsername());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/pending")
+    public ResponseEntity<List<FollowRequestDto>> getPendingRequests(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return ResponseEntity.ok(followService.getIncomingPendingRequests(userDetails.getUsername()));
     }
 }

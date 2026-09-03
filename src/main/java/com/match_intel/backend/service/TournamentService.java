@@ -357,7 +357,7 @@ public class TournamentService {
                         boolean p1Winner = false;
                         boolean p2Winner = false;
 
-                        if (m.isBye()) {
+                        if (Boolean.TRUE.equals(m.isBye())) {
                             score = "W/O";
                             p1Winner = true;
                         } else if (m.isFinished()) {
@@ -385,7 +385,7 @@ public class TournamentService {
                                 m.getPlayer2() != null ? m.getPlayer2().getUsername() : null,
                                 score,
                                 m.isFinished(),
-                                m.isBye(),
+                                Boolean.TRUE.equals(m.isBye()),
                                 p1Winner,
                                 p2Winner,
                                 m.getLivePlayer1Games(),
