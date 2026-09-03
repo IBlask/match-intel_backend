@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface MatchRepository extends JpaRepository<Match, UUID> {
@@ -22,4 +23,10 @@ public interface MatchRepository extends JpaRepository<Match, UUID> {
           AND m.visibility IN ('PUBLIC', 'FOLLOWERS')
     """)
     List<Match> findVisibleMatchesOfFollowees(@Param("followerId") UUID followerId);
+
+    List<Match> findByTournamentIdAndRoundOrderByBracketPositionAsc(UUID tournamentId, Integer round);
+
+    List<Match> findByTournamentIdOrderByRoundAscBracketPositionAsc(UUID tournamentId);
+
+    Optional<Match> findByTournamentIdAndRoundAndBracketPosition(UUID tournamentId, Integer round, Integer bracketPosition);
 }

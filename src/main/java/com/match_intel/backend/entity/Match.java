@@ -7,6 +7,8 @@ import lombok.val;
 
 import java.util.UUID;
 
+
+
 @Entity
 @Table(name = "matches")
 @Getter
@@ -15,12 +17,12 @@ public class Match {
     @GeneratedValue(generator = "GenerationType.UUID")
     private UUID id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "player1_id", referencedColumnName = "id")
     @Setter
     private User player1;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "player2_id", referencedColumnName = "id")
     @Setter
     private User player2;
@@ -95,4 +97,37 @@ public class Match {
     @Transient
     @Setter
     private boolean likedByUser;
+
+    @ManyToOne
+    @JoinColumn(name = "tournament_id", referencedColumnName = "id")
+    @Setter
+    private Tournament tournament;
+
+    @Column
+    @Setter
+    private Integer round;
+
+    @Column(name = "bracket_position")
+    @Setter
+    private Integer bracketPosition;
+
+    @Column(name = "is_bye")
+    @Setter
+    private boolean isBye = false;
+
+    @Column
+    @Setter
+    private Integer livePlayer1Games;
+
+    @Column
+    @Setter
+    private Integer livePlayer2Games;
+
+    @Column
+    @Setter
+    private String livePlayer1Points;
+
+    @Column
+    @Setter
+    private String livePlayer2Points;
 }

@@ -1,0 +1,235 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.match-intel:backend >-----------------------
+[INFO] Building Match Intel - backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.3.5:run (default-cli) > test-compile @ backend >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ backend ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 4 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ backend ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 123 source files with javac [debug parameters release 17] to target\classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[47,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[52,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[55,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[58,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[61,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[64,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[67,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[69,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[71,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[74,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[78,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[80,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[81,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[82,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[83,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[84,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[85,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[86,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[87,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[88,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[90,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[91,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[93,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[97,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[99,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[105,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[107,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[109,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[111,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[123,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[124,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[127,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[130,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[132,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[135,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[138,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[140,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[143,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[147,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[152,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[154,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[157,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[158,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[159,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[161,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[162,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[164,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[165,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[173,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[176,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[179,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[181,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[186,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[189,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[190,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[191,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[192,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[195,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[198,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[200,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[203,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[207,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[208,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[209,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[212,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[215,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[217,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[220,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[225,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[227,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[230,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[231,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[232,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[235,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[236,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[236,25] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[236,47] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[238,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[240,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[241,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[243,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[244,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[246,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[248,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[251,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[253,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[254,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[255,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[256,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[257,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[258,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[259,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[260,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[261,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[262,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[263,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[264,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[265,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[266,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[267,17] class, interface, enum, or record expected
+[INFO] 100 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.951 s
+[INFO] Finished at: 2026-09-03T23:20:02+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project backend: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[47,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[52,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[55,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[58,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[61,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[64,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[67,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[69,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[71,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[74,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[78,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[80,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[81,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[82,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[83,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[84,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[85,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[86,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[87,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[88,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[90,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[91,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[93,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[97,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[99,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[105,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[107,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[109,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[111,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[123,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[124,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[127,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[130,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[132,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[135,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[138,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[140,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[143,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[147,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[152,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[154,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[157,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[158,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[159,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[161,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[162,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[164,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[165,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[173,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[176,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[179,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[181,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[186,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[189,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[190,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[191,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[192,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[195,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[198,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[200,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[203,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[207,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[208,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[209,5] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[212,12] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[215,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[217,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[220,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[225,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[227,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[230,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[231,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[232,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[235,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[236,9] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[236,25] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[236,47] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[238,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[240,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[241,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[243,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[244,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[246,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[248,13] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[251,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[253,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[254,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[255,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[256,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[257,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[258,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[259,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[260,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[261,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[262,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[263,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[264,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[265,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[266,17] class, interface, enum, or record expected
+[ERROR] /C:/Users/blask/Desktop/Match-Intel/Match-Intel-Backend/src/main/java/com/match_intel/backend/service/TournamentService.java:[267,17] class, interface, enum, or record expected
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

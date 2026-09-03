@@ -33,6 +33,10 @@ public class MatchService {
     private CommentRepository commentRepository;
     @Autowired
     private ClubRepository clubRepository;
+    @Autowired
+    private TournamentRepository tournamentRepository;
+    @Autowired
+    private TournamentRefereeRepository tournamentRefereeRepository;
 
 
     public CreateMatchResponse createMatch(
@@ -165,14 +169,28 @@ public class MatchService {
             );
         }
 
-        boolean isPlayer1 = match.getPlayer1().getUsername().equals(currentUsername);
-        boolean isPlayer2 = match.getPlayer2().getUsername().equals(currentUsername);
-        boolean isReferee = match.getReferee() != null && match.getReferee().getUsername().equals(currentUsername);
-        if (!isPlayer1 && !isPlayer2 && !isReferee) {
-            throw new ClientErrorException(
-                    HttpStatus.FORBIDDEN,
-                    "Only players or the referee can score points"
-            );
+        if (match.getTournament() != null) {
+            if (!tournamentRefereeRepository.existsByTournamentAndUser(
+                    match.getTournament(),
+                    userRepository.findByUsername(currentUsername)
+                            .orElseThrow(() -> new ClientErrorException(HttpStatus.BAD_REQUEST, "User not found"))
+            )) {
+                throw new ClientErrorException(
+                        HttpStatus.FORBIDDEN,
+                        "Only assigned tournament referees can score points in tournament matches"
+                );
+            }
+        } else {
+            boolean isPlayer1 = match.getPlayer1().getUsername().equals(currentUsername);
+            boolean isPlayer2 = match.getPlayer2().getUsername().equals(currentUsername);
+            boolean isReferee = match.getReferee() != null
+                    && match.getReferee().getUsername().equals(currentUsername);
+            if (!isPlayer1 && !isPlayer2 && !isReferee) {
+                throw new ClientErrorException(
+                        HttpStatus.FORBIDDEN,
+                        "Only players or the referee can score points"
+                );
+            }
         }
 
         if (!scoringPlayerUsername.equals(match.getPlayer1().getUsername())
@@ -268,7 +286,14 @@ public class MatchService {
             match.setPlayer1Efficiency(player1Efficiency);
             match.setPlayer2Efficiency(player2Efficiency);
             match.setFinalScore(newPoint.getPlayer1Sets() + " : " + newPoint.getPlayer2Sets());
+            persistLiveSnapshot(match, newPoint);
             matchRepository.save(match);
+
+            // Advance winner in tournament bracket only when the match is fully finished
+            // (someone won the match outright — typically best of 3 sets / 2 sets)
+            if (match.isFinished() && match.getTournament() != null && match.getRound() != null) {
+                advanceTournamentWinner(match);
+            }
         }
         // if this is the first point
         else {
@@ -276,9 +301,18 @@ public class MatchService {
             newPoint = new Point(match.getId(), scoringPlayerNumber, playerToServeNumber, forced, scoringPlayerUsername);
             newPoint.setIsFirstServe(firstServeFlag);
             pointRepository.save(newPoint);
+            persistLiveSnapshot(match, newPoint);
+            matchRepository.save(match);
         }
 
         return newPoint;
+    }
+
+    private void persistLiveSnapshot(Match match, Point latestPoint) {
+        match.setLivePlayer1Games(latestPoint.getPlayer1Games());
+        match.setLivePlayer2Games(latestPoint.getPlayer2Games());
+        match.setLivePlayer1Points(latestPoint.getPlayer1Points());
+        match.setLivePlayer2Points(latestPoint.getPlayer2Points());
     }
 
     public List<Match> getVisibleMatches(String requesterUsername, String targetUsername) {
@@ -606,5 +640,60 @@ public class MatchService {
 
     public Long getCommentsCount(UUID matchUUID) {
         return (long) commentRepository.findAllByMatch_Id(matchUUID).size();
+    }
+
+    private void advanceTournamentWinner(Match completedMatch) {
+        UUID tournamentId = completedMatch.getTournament().getId();
+        int currentRound = completedMatch.getRound();
+        int currentPosition = completedMatch.getBracketPosition();
+
+        int nextRound = currentRound + 1;
+        int nextPosition = currentPosition / 2;
+
+        Optional<Match> nextMatchOpt = matchRepository
+                .findByTournamentIdAndRoundAndBracketPosition(tournamentId, nextRound, nextPosition);
+
+        if (nextMatchOpt.isEmpty()) {
+            // This was the final — tournament is finished
+            Tournament tournament = completedMatch.getTournament();
+            tournament.setStatus(TournamentStatus.FINISHED);
+            tournament.setEndDate(completedMatch.getStartDate());
+            tournamentRepository.save(tournament);
+            return;
+        }
+
+        Match nextMatch = nextMatchOpt.get();
+        User winner = determineMatchWinner(completedMatch);
+
+        // Determine which slot (player1 or player2) this winner fills
+        // Even bracket positions feed into player1, odd into player2 of next match
+        if (currentPosition % 2 == 0) {
+            nextMatch.setPlayer1(winner);
+        } else {
+            nextMatch.setPlayer2(winner);
+        }
+
+        // If both players are now set, the match is ready to play
+        if (nextMatch.getPlayer1() != null && nextMatch.getPlayer2() != null) {
+            nextMatch.setInitialServer(nextMatch.getPlayer1().getUsername());
+        }
+
+        matchRepository.save(nextMatch);
+    }
+
+    private User determineMatchWinner(Match match) {
+        String finalScore = match.getFinalScore();
+        if (finalScore != null && !finalScore.isBlank() && !finalScore.equals("0 : 0")) {
+            String[] parts = finalScore.split("\\s*:\\s*");
+            if (parts.length == 2) {
+                try {
+                    int p1Sets = Integer.parseInt(parts[0]);
+                    int p2Sets = Integer.parseInt(parts[1]);
+                    return p1Sets > p2Sets ? match.getPlayer1() : match.getPlayer2();
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        return match.getPlayer1();
     }
 }

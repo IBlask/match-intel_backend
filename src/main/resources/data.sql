@@ -78,3 +78,17 @@ INSERT INTO court_reservations(id, club_id, court_id, user_id, reservation_date,
         ('e1f0ecc0-0000-4000-8000-000000000007', 'b1f0ecc0-0000-4000-8000-000000000002',
          'd1f0ecc0-0000-4000-8000-000000000003', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13',
          '2026-08-06', '15:00', '16:00', 'PENDING', '2026-08-05 10:07:00');
+
+INSERT INTO tournaments(id, name, club_id, created_by_id, start_date, status, max_players, number_of_players, registration_deadline, created_at)
+    VALUES
+        ('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'Summer Championship 2026', 'b1f0ecc0-0000-4000-8000-000000000001',
+         'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', '01.09.2026.', 'OPEN', 4, 3, '2026-09-28T18:00', '2026-08-20 10:00:00');
+
+INSERT INTO tournament_registrations(id, tournament_id, user_id, registered_at)
+    VALUES
+        ('b1b2c3d4-e5f6-7890-abcd-ef1234567890', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+         'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', '2026-08-20 10:05:00'),
+        ('b1b2c3d4-e5f6-7890-abcd-ef1234567891', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+         'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '2026-08-20 10:10:00'),
+        ('b1b2c3d4-e5f6-7890-abcd-ef1234567892', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+         'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13', '2026-08-20 10:15:00');
